@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import CourseDetail from "./Course"; // 確保這個組件存在
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // 引入自訂元件 (導覽列 & 頁尾)

@@ -1,24 +1,35 @@
-import React from 'react';
-import { Navbar, Nav, Container, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import './AppNavbar.css';
+import React from "react";
+import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import styles from "./AppNavbar.module.css";
 
 function AppNavbar() {
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar expand="lg" className={styles.navbarCustom}>
       <Container>
-        <Navbar.Brand as={Link} to="/">線上課程平台</Navbar.Brand>
+        {/* Logo */}
+        <Navbar.Brand as={Link} to="/" className={styles.brand}>
+          線上課程<span>平台</span>
+        </Navbar.Brand>
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
+          {/* 選單項目 */}
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">首頁</Nav.Link>
-            <Nav.Link as={Link} to="/courses">課程列表</Nav.Link>
+            <Nav.Link as={Link} to="/" className={`${styles.navItem} ${styles.navItemActive}`}>
+              首頁
+            </Nav.Link>
+            <Nav.Link as={Link} to="/courses" className={styles.navItem}>
+              課程列表
+            </Nav.Link>
           </Nav>
-          <Nav>
-            <Button as={Link} to="/login" className="me-3 custom-login-btn">
-              登入
+
+          {/* 右側按鈕 */}
+          <Nav className={styles.buttonGroup}>
+            <Button as={Link} to="/search" className={styles.searchButton}>
+              🔍 Search
             </Button>
-            <Button as={Link} to="/register" className="custom-register-btn">
+            <Button as={Link} to="/register" className={styles.registerButton}>
               註冊
             </Button>
           </Nav>

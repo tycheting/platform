@@ -42,9 +42,19 @@ function CourseDetail() {
 
   return (
     <Container className="mt-4">
-      <h2>{course.title}</h2>
-      <p>{course.description}</p>
-      <p>價格: {course.price}</p>
+      <div>
+          <h1>{course.title}</h1>
+          <p>{course.description}</p>
+          <p>{course.category}</p>
+
+          {/* 顯示影片 */}
+          {course.video_path && (
+                <video width="640" height="360" controls>
+                    <source src={course.video_path} type="video/mp4" />
+                    您的瀏覽器不支援 HTML5 影片標籤。
+                </video>
+            )}
+        </div>
       <Button variant="success">選課</Button>
     </Container>
   );
