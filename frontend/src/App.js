@@ -1,27 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// 引入自訂元件 (導覽列 & 頁尾)
+import AppNavbar from './components/AppNavbar';
+import Footer from './components/Footer';
+
+// 引入各個頁面
+import Home from './pages/Home';
+import Courses from './pages/Courses';
+import CoursesDetail from './pages/CoursesDetail';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    // 向後端 (localhost:5000) 取得資料
-    axios.get('http://localhost:5000/')
-      .then((res) => {
-        setMessage(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
-
   return (
-    <div style={{ margin: '20px' }}>
-      <h1>React 與 Express 測試</h1>
-      <p>後端回傳: {message}</p>
-    </div>
+    <Router>
+      <AppNavbar /> {/* 導覽列 (Navbar) */}
+      
+      <div className="container mt-4"> {/* Bootstrap 的 Container */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:id" element={<CoursesDetail />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </div>
+
+      <Footer /> {/* 頁尾 (Footer) */}
+    </Router>
   );
 }
 
