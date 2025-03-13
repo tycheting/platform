@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "0000",
+    "database": "online_course_platform",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "0000",
+    "database": "online_course_platform_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "0000",
+    "database": "online_course_platform_prod",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}
