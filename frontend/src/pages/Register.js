@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
+import './Register.css';
 
 function Register() {
   const [email, setEmail] = useState('');

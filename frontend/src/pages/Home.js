@@ -1,6 +1,7 @@
 // src/pages/Home.js
 import React from 'react';
 import { Container, Jumbotron, Button } from 'react-bootstrap';
+import './Home.css';
 
 function Home() {
   return (

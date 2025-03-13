@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import './Courses.css';
 
 function Courses() {
   const [courses, setCourses] = useState([]);

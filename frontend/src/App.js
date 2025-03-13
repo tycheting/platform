@@ -16,19 +16,22 @@ import Register from './pages/Register';
 function App() {
   return (
     <Router>
-      <AppNavbar /> {/* 導覽列 (Navbar) */}
-      
-      <div className="container mt-4"> {/* Bootstrap 的 Container */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/courses/:id" element={<CoursesDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </div>
+      <div className="d-flex flex-column min-vh-100">
+        <AppNavbar />
+        
+        {/* 這個區域會填滿剩餘空間 */}
+        <div className="main-content flex-grow-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:id" element={<CoursesDetail />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </div>
 
-      <Footer /> {/* 頁尾 (Footer) */}
+        <Footer />
+      </div>
     </Router>
   );
 }

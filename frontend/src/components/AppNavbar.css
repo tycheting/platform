@@ -1,0 +1,16 @@
+/* 設定登入按鈕樣式 */
+.custom-login-btn {
+    border: 2px solid white;
+    color: white;
+    padding: 5px 15px;
+    font-size: 16px;
+  }
+  
+  /* 設定註冊按鈕樣式 */
+  .custom-register-btn {
+    background-color: #ff6600; /* 橘色註冊按鈕 */
+    border: none;
+    padding: 5px 15px;
+    font-size: 16px;
+  }
+  
