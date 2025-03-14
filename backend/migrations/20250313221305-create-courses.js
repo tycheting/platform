@@ -5,6 +5,7 @@ module.exports = {
       title: { type: Sequelize.STRING, allowNull: false },
       description: { type: Sequelize.TEXT },
       category: { type: Sequelize.STRING },
+      tags: { type: Sequelize.JSON },
       video_path: { type: Sequelize.STRING },
       createdAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.literal("CURRENT_TIMESTAMP") },
       updatedAt: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.literal("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP") }

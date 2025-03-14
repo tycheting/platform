@@ -19,8 +19,16 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: true
     },
+    tags: {
+      type: DataTypes.JSON,
+      allowNull: true
+    },
     video_path: {
       type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    image_path: {
+      type: DataTypes.STRING,
       allowNull: true
     }
   }, {

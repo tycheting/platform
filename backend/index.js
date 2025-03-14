@@ -129,6 +129,22 @@ app.get("/recommend/:userId", (req, res) => {
   });
 });
 
+app.get("/search", async (req, res) => {
+  try {
+      const { category, tag } = req.query;
+      let whereClause = {};
+
+      if (category) whereClause.category = category;
+      if (tag) whereClause.tags = { [db.Sequelize.Op.contains]: [tag] };
+
+      const courses = await db.Course.findAll({ where: whereClause });
+      res.json(courses);
+  } catch (err) {
+      console.error("課程搜尋失敗:", err);
+      res.status(500).send("伺服器錯誤");
+  }
+});
+
 
 // 簡單測試用路由
 app.get('/', (req, res) => {
