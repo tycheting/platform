@@ -9,6 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/videos", express.static("public/videos"));
+app.use("/images", express.static("public/images"));
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -59,6 +60,12 @@ app.post("/login", (req, res) => {
 app.get("/courses", (req, res) => {
   db.query("SELECT * FROM courses", (err, results) => {
       if (err) return res.status(500).send(err);
+
+      results.forEach(course => {
+        if (course.image_path) {
+          course.image_path = `http://localhost:5000/${course.image_path}`;
+        }
+      });
       res.json(results);
   });
 });
@@ -74,6 +81,7 @@ app.get("/courses/:id", (req, res) => {
       if (result.length === 0) return res.status(404).send("課程不存在");
 
       result[0].video_path = `http://localhost:5000/${result[0].video_path}`;
+      result[0].image_path = `http://localhost:5000/${result[0].image_path}`;
       res.json(result[0]);
   });
 });

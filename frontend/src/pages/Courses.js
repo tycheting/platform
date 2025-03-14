@@ -33,6 +33,14 @@ function Courses() {
               style={{ textDecoration: 'none', color: 'inherit' }}
             >
               <Card className="h-100">
+                {course.image_path && (
+                  <Card.Img 
+                    variant="top" 
+                    src={course.image_path} 
+                    alt={course.title}
+                    style={{ height: "180px", objectFit: "cover" }} // 讓圖片固定大小
+                  />
+                )}
                 <Card.Body>
                   <Card.Title>{course.title}</Card.Title>
                   <Card.Text>
