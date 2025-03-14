@@ -1,0 +1,50 @@
+/* 整個課程詳情頁容器 (可選) */
+.course-detail-container {
+    max-width: 800px;       /* 控制內容寬度 */
+    margin: 40px auto;      /* 置中 */
+  }
+  
+  /* 影片容器 */
+  .video-container {
+    width: 100%;
+    border: 1px solid #ccc;  /* 外框，讓影片區塊跟背景分開 */
+    border-radius: 8px;
+    overflow: hidden;        /* 防止邊角超出 */
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  /* 影片本身：填滿寬度、高度自適應 */
+  .course-video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  /* 如果沒有 video_path，就顯示一個佔位訊息 */
+  .video-placeholder {
+    width: 100%;
+    height: 360px;           /* 大約16:9可視需求調整 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+  }
+  
+  /* 課程標題 */
+  .course-detail-container .course-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  
+  
+  /* 課程描述 */
+  .course-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 24px;
+  }
+  

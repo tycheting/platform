@@ -27,11 +27,13 @@ function Courses() {
         {courses.map(course => (
           <Col key={course.id} xs={12} sm={6} md={4} lg={4} className="mb-4">
             <Link to={`/courses/${course.id}`} className="course-link">
-              <img 
-                src={course.image_path} 
-                alt={course.title} 
-                className="course-image"
-              />
+              <div className="course-image-container">
+                <img 
+                  src={course.image_path} 
+                  alt={course.title} 
+                  className="course-image"
+                />
+              </div>
               <h5 className="course-title">{course.title}</h5>
             </Link>
           </Col>
