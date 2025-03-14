@@ -1,0 +1,46 @@
+/* 搜尋欄外框 */
+.search-container {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 50px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    width: 400px;
+  }
+  
+  /* 搜尋圖示 */
+  .search-icon {
+    padding: 0 12px;
+    color: #bbb;
+  }
+  
+  /* 輸入框 */
+  .search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+    color: #666;
+  }
+  
+  /* 按鈕 */
+  .search-button {
+    background: #111;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s ease;
+  }
+  
+  /* 按鈕懸停 */
+  .search-button:hover {
+    background: #222;
+  }
+  

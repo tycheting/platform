@@ -1,6 +1,6 @@
 // src/pages/Courses.js
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './Courses.css';
@@ -27,21 +27,20 @@ function Courses() {
       <Row>
         {courses.map(course => (
           <Col key={course.id} md={4} className="mb-4">
-            <Card>
-              <Card.Body>
-                <Card.Title>{course.title}</Card.Title>
-                <Card.Text>
-                  {course.description?.slice(0, 60)}...
-                </Card.Text>
-                <Button 
-                  as={Link} 
-                  to={`/courses/${course.id}`} 
-                  variant="primary"
-                >
-                  查看詳情
-                </Button>
-              </Card.Body>
-            </Card>
+            {/* 以 <Link> 包裹整個 Card，並移除「查看詳情」按鈕。 */}
+            <Link 
+              to={`/courses/${course.id}`} 
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              <Card className="h-100">
+                <Card.Body>
+                  <Card.Title>{course.title}</Card.Title>
+                  <Card.Text>
+                    {course.description?.slice(0, 60)}...
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Link>
           </Col>
         ))}
       </Row>
