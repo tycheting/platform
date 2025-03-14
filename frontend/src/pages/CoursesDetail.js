@@ -15,7 +15,7 @@ function CourseDetail() {
 
   const getCourseDetail = async (courseId) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/courses/${courseId}`);
+      const res = await axios.get(`http://localhost:5000/courses/${courseId}`);
       setCourse(res.data);
       setLoading(false);
     } catch (error) {

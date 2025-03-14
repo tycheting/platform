@@ -14,7 +14,7 @@ function Courses() {
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/courses');
+      const res = await axios.get('http://localhost:5000/courses');
       setCourses(res.data);
     } catch (error) {
       console.error('取得課程失敗: ', error);

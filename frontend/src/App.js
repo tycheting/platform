@@ -22,7 +22,7 @@ function App() {
         {/* 這個區域會填滿剩餘空間 */}
         <div className="main-content flex-grow-1">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Courses />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:id" element={<CoursesDetail />} />
             <Route path="/login" element={<Login />} />
