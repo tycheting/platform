@@ -1,6 +1,5 @@
-// src/pages/Courses.js
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './Courses.css';
@@ -23,31 +22,17 @@ function Courses() {
 
   return (
     <Container className="mt-4">
-      <h2>課程列表</h2>
+      <h2 className="featured-title">精選課程</h2>
       <Row>
         {courses.map(course => (
-          <Col key={course.id} md={4} className="mb-4">
-            {/* 以 <Link> 包裹整個 Card，並移除「查看詳情」按鈕。 */}
-            <Link 
-              to={`/courses/${course.id}`} 
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              <Card className="h-100">
-                {course.image_path && (
-                  <Card.Img 
-                    variant="top" 
-                    src={course.image_path} 
-                    alt={course.title}
-                    style={{ height: "180px", objectFit: "cover" }} // 讓圖片固定大小
-                  />
-                )}
-                <Card.Body>
-                  <Card.Title>{course.title}</Card.Title>
-                  <Card.Text>
-                    {course.description?.slice(0, 60)}...
-                  </Card.Text>
-                </Card.Body>
-              </Card>
+          <Col key={course.id} xs={12} sm={6} md={4} lg={4} className="mb-4">
+            <Link to={`/courses/${course.id}`} className="course-link">
+              <img 
+                src={course.image_path} 
+                alt={course.title} 
+                className="course-image"
+              />
+              <h5 className="course-title">{course.title}</h5>
             </Link>
           </Col>
         ))}
