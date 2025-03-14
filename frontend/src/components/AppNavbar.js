@@ -7,7 +7,7 @@ function AppNavbar() {
   return (
     <Navbar bg="light" expand="lg" className="py-2">
       {/* 左側品牌名稱 / Logo */}
-      <Navbar.Brand as={Link} to="/">線上課程平台</Navbar.Brand>
+      <Navbar.Brand as={Link} to="/" className="ps-3">線上課程平台</Navbar.Brand>
 
       {/* 小螢幕時的漢堡選單按鈕 */}
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
