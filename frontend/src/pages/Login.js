@@ -1,6 +1,6 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
-import { Container, Form, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
 
@@ -8,6 +8,7 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,46 +18,57 @@ function Login() {
         password
       });
       setMsg(res.data.msg);
-      // TODO: 儲存登入資訊 (例如: token, user data) 到 localStorage 或 Context
     } catch (error) {
       if (error.response) {
         setMsg(error.response.data.msg || '登入失敗');
       } else {
-        setMsg('登入失敗(伺服器無回應)');
+        setMsg('登入失敗（伺服器無回應）');
       }
     }
   };
 
   return (
-    <Container style={{ maxWidth: '400px', marginTop: '2rem' }}>
-      <h2>登入</h2>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="formEmail">
-          <Form.Label>Email</Form.Label>
-          <Form.Control 
-            type="email" 
+    <div
+      className="login-page"
+      style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)` }}
+    >
+      {/* LOGO 漂浮在登入卡片外部上方 */}
+      <img
+        src={`${process.env.PUBLIC_URL}/logo2.png`}
+        alt="Logo"
+        className="login-float-logo"
+      />
+
+      {/* 登入卡片本體 */}
+      <div className="login-card">
+        <h2 className="login-title">登入</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="信箱"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="輸入 Email" 
+            required
           />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formPassword">
-          <Form.Label>密碼</Form.Label>
-          <Form.Control 
-            type="password" 
+          <input
+            type="password"
+            placeholder="密碼"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="輸入密碼" 
+            required
           />
-        </Form.Group>
+          <button type="submit">登入</button>
+          {msg && <p className="login-msg">{msg}</p>}
+        </form>
 
-        <Button variant="primary" type="submit">
-          登入
-        </Button>
-      </Form>
-      {msg && <p className="mt-3">{msg}</p>}
-    </Container>
+        <p className="register-text">
+          還沒有帳號？{' '}
+          <span className="register-link" onClick={() => navigate('/register')}>
+            註冊
+          </span>
+        </p>
+      </div>
+    </div>
   );
 }
 

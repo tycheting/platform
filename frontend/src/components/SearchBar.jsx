@@ -1,59 +1,48 @@
-import React, { useState } from "react";
-import { Form, FormControl, Button, InputGroup } from "react-bootstrap";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import "./SearchBar.css";
+import { FaSearch, FaMicrophone } from "react-icons/fa";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isActive, setIsActive] = useState(false);
+  const inputRef = useRef(null); // ⭐ 取得輸入框的 DOM
   const navigate = useNavigate();
 
-  // 處理表單提交
   const handleSubmit = (e) => {
     e.preventDefault();
-    // 這裡可以做各種搜尋邏輯：
-    // 1. 導航到 /search?query=搜尋字串
-    // 2. 或呼叫某個 API 取得搜尋結果
-    navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
+    if (!searchTerm.trim()) return;
+
+    navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+    setSearchTerm("");
+    setIsActive(false);
+  };
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setIsActive(value.trim().length > 0);
   };
 
   return (
-    <Form
+    <form
+      className={`search-container ${isActive ? "active" : ""}`}
       onSubmit={handleSubmit}
-      className="d-flex mx-auto"
-      style={{ maxWidth: "400px", flex: "1" }}
+      onClick={() => inputRef.current?.focus()} // 點整個表單聚焦輸入框
     >
-      <InputGroup className="rounded-pill overflow-hidden w-100">
-        <InputGroup.Text className="bg-transparent border-0 ps-3 pe-2">
-          🔍
-        </InputGroup.Text>
-
-        {/* 文字輸入框，跟 searchTerm 綁定 */}
-        <FormControl
-          placeholder="搜尋"
-          aria-label="搜尋"
-          className="border-0"
-          style={{
-            height: "36px",
-            fontSize: "14px",
-          }}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-
-        {/* 按鈕：提交表單 */}
-        <Button
-          variant="dark"
-          className="border-0"
-          style={{
-            height: "36px",
-            fontSize: "14px",
-            padding: "5px 15px",
-          }}
-          type="submit" // 重要：讓表單submit
-        >
-          搜尋
-        </Button>
-      </InputGroup>
-    </Form>
+      <FaSearch className="search-icon" />
+      <input
+        ref={inputRef} // 綁定 ref
+        className="search-input"
+        type="text"
+        placeholder="搜尋課程、主題、老師"
+        value={searchTerm}
+        onChange={handleChange}
+      />
+      <button type="submit" className="search-button" title="搜尋">
+        <FaMicrophone />
+      </button>
+    </form>
   );
 };
 

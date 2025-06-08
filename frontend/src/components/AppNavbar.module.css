@@ -1,64 +1,76 @@
-/* 設定導覽列背景與陰影 */
-.custom-navbar {
-    background-color: white;
-    padding: 15px 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
-  }
-  
-  /* Logo 設計 */
-  .navbar-logo {
-    height: 40px;
-  }
-  
-  /* 導覽連結樣式 */
-  .nav-item {
-    font-size: 16px;
-    font-weight: 500;
-    color: #333 !important;
-    margin: 0 15px;
-  }
-  
-  .nav-item:hover {
-    color: #6c63ff !important; /* 紫色 hover 效果 */
-  }
-  
-  /* 右側圖標樣式 */
-  .icon-style {
-    font-size: 20px;
-    color: #6c63ff;
-    cursor: pointer;
-  }
-  
-  /* 搜尋欄樣式 */
-  .search-bar-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-  }
-  
-  .search-bar {
-    display: flex;
-    align-items: center;
-    background-color: #f0ecff;
-    border-radius: 25px;
-    padding: 5px 15px;
-    width: 400px;
-  }
-  
-  .search-input {
-    flex: 1;
-    border: none;
-    background: none;
-    outline: none;
-    font-size: 16px;
-    padding: 5px;
-  }
-  
-  .search-button {
-    border: none;
-    background: none;
-    font-size: 18px;
-    color: #6c63ff;
-    cursor: pointer;
-  }
-  
+/* 導覽列背景、陰影、上下高度 */
+.navbarRoot {
+  background-color: white;
+  padding: 8px 20px; /* 上下空間略窄 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* 固定導覽列 */
+.stickyNavbar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: white;
+}
+
+/* Logo 尺寸 */
+.navbarLogo {
+  height: 36px;
+}
+
+/* 一般 navLink 基底樣式 */
+.navLink {
+  position: relative;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333 !important;
+  padding: 6px 12px;
+  display: inline-block;
+  text-decoration: none;
+}
+
+/* 底線基礎狀態，不加 transition */
+.navLink::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background-color: #000;
+}
+
+/* 滑鼠 hover 時才加動畫效果 */
+.navLink:hover::after {
+  transition: width 0.3s ease;
+  width: 100%;
+}
+
+.navLink:hover {
+  color: #000 !important;
+}
+
+/* active 狀態：直接顯示底線，不加 transition */
+.active {
+  color: #000 !important;
+  font-weight: 700;
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+.active::after {
+  width: 100%;
+}
+
+/* 登入註冊按鈕樣式 */
+.navButton {
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.navButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}

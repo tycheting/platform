@@ -1,6 +1,6 @@
 // src/pages/Register.js
 import React, { useState } from 'react';
-import { Container, Form, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Register.css';
 
@@ -9,6 +9,7 @@ function Register() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [msg, setMsg] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,51 +24,59 @@ function Register() {
       if (error.response) {
         setMsg(error.response.data.msg || '註冊失敗');
       } else {
-        setMsg('註冊失敗(伺服器無回應)');
+        setMsg('註冊失敗（伺服器無回應）');
       }
     }
   };
 
   return (
-    <Container style={{ maxWidth: '400px', marginTop: '2rem' }}>
-      <h2>註冊</h2>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3" controlId="formEmail">
-          <Form.Label>Email</Form.Label>
-          <Form.Control 
-            type="email" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="輸入 Email" 
-          />
-        </Form.Group>
+    <div
+      className="register-page"
+      style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)` }}
+    >
+      {/* LOGO 漂浮在註冊卡片外部上方 */}
+      <img
+        src={`${process.env.PUBLIC_URL}/logo2.png`}
+        alt="Logo"
+        className="register-float-logo"
+      />
 
-        <Form.Group className="mb-3" controlId="formPassword">
-          <Form.Label>密碼</Form.Label>
-          <Form.Control 
-            type="password" 
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="輸入密碼" 
-          />
-        </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formName">
-          <Form.Label>姓名</Form.Label>
-          <Form.Control 
-            type="text" 
+      <div className="register-card">
+        <h2 className="register-title">註冊</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="姓名"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="輸入姓名" 
+            required
           />
-        </Form.Group>
+          <input
+            type="email"
+            placeholder="信箱"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="密碼"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit">註冊</button>
+          {msg && <p className="register-msg">{msg}</p>}
+        </form>
 
-        <Button variant="primary" type="submit">
-          註冊
-        </Button>
-      </Form>
-      {msg && <p className="mt-3">{msg}</p>}
-    </Container>
+        <p className="login-text">
+          已經有帳號了？{' '}
+          <span className="login-link" onClick={() => navigate('/login')}>
+            登入
+          </span>
+        </p>
+      </div>
+    </div>
   );
 }
 

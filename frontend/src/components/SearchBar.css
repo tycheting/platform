@@ -1,46 +1,50 @@
-/* 搜尋欄外框 */
+/* -------- Search Bar -------- */
 .search-container {
-    display: flex;
-    align-items: center;
-    background: white;
-    border-radius: 50px;
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    width: 400px;
-  }
-  
-  /* 搜尋圖示 */
-  .search-icon {
-    padding: 0 12px;
-    color: #bbb;
-  }
-  
-  /* 輸入框 */
-  .search-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 16px;
-    background: transparent;
-    color: #666;
-  }
-  
-  /* 按鈕 */
-  .search-button {
-    background: #111;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 50px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    transition: background 0.3s ease;
-  }
-  
-  /* 按鈕懸停 */
-  .search-button:hover {
-    background: #222;
-  }
-  
+  display: flex;
+  height: 48px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 2px 20px;
+  width: 600px;
+  transition: all 0.3s ease;
+  transform: scale(1);
+  cursor: text;
+}
+
+/* 滑鼠移入或輸入框取得焦點 → 亮起並放大 */
+.search-container:hover,
+.search-container:focus-within {
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  transform: scale(1.02);
+}
+
+.search-icon,
+.search-button {
+  font-size: 18px;
+  color: #666;
+  margin-right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.search-icon:hover,
+.search-button:hover {
+  transform: scale(1.15);
+  color: #333;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+  color: #333;
+}
