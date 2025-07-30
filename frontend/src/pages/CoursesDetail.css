@@ -1,50 +1,146 @@
-/* 整個課程詳情頁容器 (可選) */
 .course-detail-container {
-    max-width: 800px;       /* 控制內容寬度 */
-    margin: 40px auto;      /* 置中 */
+  max-width: 1440px;
+  margin: 32px auto 16px auto;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.intro-layout {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.course-intro {
+  flex: 0 0 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-left: 1.5px solid #444;
+  padding-left: 24px;
+  height: 100%;
+  align-self: stretch;
+}
+
+.course-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.course-description {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #555;
+}
+
+.enroll-button {
+  width: 100%;
+  background-color: #6f42c1;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 10px rgba(111, 66, 193, 0.3);
+  margin-top: 16px;
+}
+
+.enroll-button:hover {
+  background-color: #5a34a8;
+  box-shadow: 0 6px 12px rgba(90, 52, 168, 0.4);
+  transform: translateY(-1px);
+}
+
+.playlist-layout {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chapter-playlist {
+  flex: 0 0 280px;
+  border-right: 1px solid #eee;
+  padding-right: 16px;
+}
+
+.playlist-item {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  background-color: #f8f8f8;
+  transition: background 0.2s;
+}
+
+.playlist-item:hover {
+  background-color: #eae6f8;
+}
+
+.playlist-item.active {
+  background-color: #d9c6f8;
+  color: #4a0080;
+  font-weight: 600;
+}
+
+.player-area {
+  flex: 1;
+  padding-left: 16px;
+}
+
+.video-container {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  flex: 1;
+  max-width: 100%;
+}
+
+.course-video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chapter-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.chapter-content {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .intro-layout,
+  .playlist-layout {
+    flex-direction: column;
   }
-  
-  /* 影片容器 */
-  .video-container {
-    width: 100%;
-    border: 1px solid #ccc;  /* 外框，讓影片區塊跟背景分開 */
-    border-radius: 8px;
-    overflow: hidden;        /* 防止邊角超出 */
+
+  .chapter-playlist {
+    flex: 100%;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
     margin-bottom: 20px;
-    background-color: #f9f9f9;
   }
-  
-  /* 影片本身：填滿寬度、高度自適應 */
-  .course-video {
-    width: 100%;
-    height: auto;
-    display: block;
+
+  .player-area {
+    padding-left: 0;
   }
-  
-  /* 如果沒有 video_path，就顯示一個佔位訊息 */
-  .video-placeholder {
-    width: 100%;
-    height: 360px;           /* 大約16:9可視需求調整 */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #999;
+
+  .chapter-title {
+    font-size: 22px;
   }
-  
-  /* 課程標題 */
-  .course-detail-container .course-title {
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 0;
-    margin-bottom: 16px;
-  }
-  
-  
-  /* 課程描述 */
-  .course-description {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #555;
-    margin-bottom: 24px;
-  }
-  
+}

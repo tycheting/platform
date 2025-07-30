@@ -4,18 +4,22 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import AppNavbar from './components/AppNavbar';
 import Footer from './components/Footer';
-import SearchBar from './components/SearchBar'; // ← 加這行
+import SearchBar from './components/SearchBar';
 
 import Home from './pages/Home';
+import Featured from './pages/Featured';
 import Courses from './pages/Courses';
 import CoursesDetail from './pages/CoursesDetail';
+import MyCourses from './pages/MyCourses';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import SearchResults from './pages/SearchResults';
 
 function AppContent() {
   const location = useLocation();
-  const hideSearchBar = ["/login", "/register"].includes(location.pathname);
+  const hideSearchBar = 
+  location.pathname.startsWith("/courses/") ||
+  ["/login", "/register"].includes(location.pathname);
 
   return (
     <>
@@ -44,9 +48,11 @@ function AppContent() {
 
         <div className="main-content flex-grow-1">
           <Routes>
-            <Route path="/" element={<Courses />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/featured" element={<Featured />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:id" element={<CoursesDetail />} />
+            <Route path="/my-courses" element={<MyCourses />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/search" element={<SearchResults />} />
@@ -59,7 +65,6 @@ function AppContent() {
   );
 }
 
-// 外層包 Router
 function App() {
   return (
     <Router>

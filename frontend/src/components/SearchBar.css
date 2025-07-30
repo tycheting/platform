@@ -1,37 +1,38 @@
 /* -------- Search Bar -------- */
 .search-container {
   display: flex;
-  height: 48px;
   align-items: center;
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 999px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  padding: 2px 20px;
+  height: 52px;
+  padding: 0 18px;
   width: 600px;
-  transition: all 0.3s ease;
+
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 999px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s ease;
   transform: scale(1);
   cursor: text;
 }
 
-/* 滑鼠移入或輸入框取得焦點 → 亮起並放大 */
 .search-container:hover,
 .search-container:focus-within {
-  background: rgba(255, 255, 255, 0.65);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-  transform: scale(1.02);
+  border-color: #5e5e5e;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transform: scale(1.015);
+  background-color: #fdfdfd;
 }
 
 .search-icon,
 .search-button {
   font-size: 18px;
-  color: #666;
-  margin-right: 12px;
+  color: #888;
   background: transparent;
   border: none;
   cursor: pointer;
   transition: transform 0.2s ease, color 0.2s ease;
+  margin-right: 12px;
 }
 
 .search-icon:hover,

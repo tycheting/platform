@@ -1,14 +1,15 @@
-// src/pages/CourseDetail.js
 import React, { useEffect, useState } from 'react';
 import { Container, Spinner, Button } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import './CoursesDetail.css'; // 新增(或更新) CSS
+import './CoursesDetail.css';
 
 function CourseDetail() {
   const { id } = useParams();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedChapter, setSelectedChapter] = useState(0);
+  const [isEnrolled, setIsEnrolled] = useState(false);
 
   useEffect(() => {
     getCourseDetail(id);
@@ -23,6 +24,10 @@ function CourseDetail() {
       console.error('取得課程詳情失敗: ', error);
       setLoading(false);
     }
+  };
+
+  const handleEnroll = () => {
+    setIsEnrolled(true);
   };
 
   if (loading) {
@@ -41,32 +46,71 @@ function CourseDetail() {
     );
   }
 
+  const chapters = [
+    {
+      title: '第一章',
+      content: '這是第一章的介紹內容。',
+      video_url: course.video_path,
+    },
+    {
+      title: '第二章',
+      content: '這是第二章的重點內容。',
+      video_url: course.video_path,
+    },
+    {
+      title: '第三章',
+      content: '這是第三章的實作影片說明。',
+      video_url: course.video_path,
+    }
+  ];
+
   return (
     <Container className="course-detail-container">
-      {/* 影片容器 */}
-      <div className="video-container">
-        {course.video_path ? (
-          <video 
-            className="course-video" 
-            controls 
-            poster={course.image_path || ""}  // 如果有預覽圖，就加上 poster
-          >
-            <source src={course.video_path} type="video/mp4" />
-            您的瀏覽器不支援 HTML5 影片標籤。
-          </video>
-        ) : (
-          <div className="video-placeholder">暫無影片</div>
-        )}
-      </div>
+      {!isEnrolled ? (
+        <>
+          <div className="intro-layout">
+            <div className="video-container flex-shrink-0">
+              <video className="course-video" controls poster={course.image_path || ""}>
+                <source src={course.video_path} type="video/mp4" />
+                您的瀏覽器不支援 HTML5 影片標籤。
+              </video>
+            </div>
 
-      {/* 課程標題 */}
-      <h1 className="course-title">{course.title}</h1>
+            <div className="course-intro">
+              <h1 className="course-title">{course.title}</h1>
+              <p className="course-description">{course.description}</p>
+              <Button className="enroll-button" onClick={handleEnroll}>選課</Button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="playlist-layout d-flex flex-column flex-lg-row gap-4">
+            <div className="chapter-playlist">
+              {chapters.map((ch, idx) => (
+                <div
+                  key={idx}
+                  className={`playlist-item ${selectedChapter === idx ? 'active' : ''}`}
+                  onClick={() => setSelectedChapter(idx)}
+                >
+                  {ch.title}
+                </div>
+              ))}
+            </div>
 
-      {/* 課程描述 */}
-      <p className="course-description">{course.description}</p>
-
-      {/* 選課按鈕 */}
-      <Button variant="success">選課</Button>
+            <div className="player-area">
+              <div className="video-container">
+                <video className="course-video" controls poster={course.image_path || ""}>
+                  <source src={chapters[selectedChapter].video_url} type="video/mp4" />
+                  您的瀏覽器不支援 HTML5 影片標籤。
+                </video>
+              </div>
+              <h2 className="chapter-title">{chapters[selectedChapter].title}</h2>
+              <p className="chapter-content">{chapters[selectedChapter].content}</p>
+            </div>
+          </div>
+        </>
+      )}
     </Container>
   );
 }
