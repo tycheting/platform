@@ -7,6 +7,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
+    course_id: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+    },
     title: {
       type: DataTypes.STRING(255),
       allowNull: false
