@@ -28,16 +28,16 @@ db.connect((err) => {
 });
 
 //註冊
-app.post("/register", async(req, res) => {
+app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  
+
   db.query("INSERT INTO users ( name, email, password ) VALUES ( ?, ?, ?)",
-      [name, email, hashedPassword],
-      (err, result) => {
-        if(err) return res.status(500).send(err);
-        res.send("註冊成功");
-      });
+    [name, email, hashedPassword],
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+      res.send("註冊成功");
+    });
 });
 
 //登入
@@ -45,28 +45,28 @@ app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
   db.query("SELECT * FROM users WHERE email = ?", [email], async (err, results) => {
-      if (err) return res.status(500).send(err);
-      if (results.length === 0) return res.status(401).send("用戶不存在");
+    if (err) return res.status(500).send(err);
+    if (results.length === 0) return res.status(401).send("用戶不存在");
 
-      const isValid = await bcrypt.compare(password, results[0].password);
-      if (!isValid) return res.status(401).send("密碼錯誤");
+    const isValid = await bcrypt.compare(password, results[0].password);
+    if (!isValid) return res.status(401).send("密碼錯誤");
 
-      const token = jwt.sign({ id: results[0].id }, process.env.SECRET_KEY, { expiresIn: "1h" });
-      res.json({ token });
+    const token = jwt.sign({ id: results[0].id }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    res.json({ token });
   });
 });
 
 //取得所有課程
 app.get("/courses", (req, res) => {
   db.query("SELECT * FROM courses", (err, results) => {
-      if (err) return res.status(500).send(err);
+    if (err) return res.status(500).send(err);
 
-      results.forEach(course => {
-        if (course.image_path) {
-          course.image_path = `http://localhost:5000/${course.image_path}`;
-        }
-      });
-      res.json(results);
+    results.forEach(course => {
+      if (course.image_path) {
+        course.image_path = `http://localhost:5000/${course.image_path}`;
+      }
+    });
+    res.json(results);
   });
 });
 
@@ -74,15 +74,15 @@ app.get("/courses", (req, res) => {
 app.get("/courses/:id", (req, res) => {
   const courseId = req.params.id;
   db.query("SELECT * FROM courses WHERE id = ?", [courseId], (err, result) => {
-      if (err) {
-          console.error("獲取課程失敗:", err);
-          return res.status(500).send("獲取課程時發生錯誤");
-      }
-      if (result.length === 0) return res.status(404).send("課程不存在");
+    if (err) {
+      console.error("獲取課程失敗:", err);
+      return res.status(500).send("獲取課程時發生錯誤");
+    }
+    if (result.length === 0) return res.status(404).send("課程不存在");
 
-      result[0].video_path = `http://localhost:5000/${result[0].video_path}`;
-      result[0].image_path = `http://localhost:5000/${result[0].image_path}`;
-      res.json(result[0]);
+    result[0].video_path = `http://localhost:5000/${result[0].video_path}`;
+    result[0].image_path = `http://localhost:5000/${result[0].image_path}`;
+    res.json(result[0]);
   });
 });
 
@@ -90,35 +90,35 @@ app.get("/courses/:id", (req, res) => {
 app.post("/enroll", (req, res) => {
   const { userId, courseId } = req.body;
 
-  db.query("INSERT INTO enrollments (user_id, course_id) VALUES (?, ?)", [userId, courseId], 
-      (err, result) => {
-          if (err) return res.status(500).send(err);
-          res.send("成功報名課程！");
-  });
+  db.query("INSERT INTO enrollments (user_id, course_id) VALUES (?, ?)", [userId, courseId],
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+      res.send("成功報名課程！");
+    });
 });
 
 //記錄使用者進度
 app.post("/update-progress", (req, res) => {
   const { userId, courseId, progress } = req.body;
 
-  db.query("UPDATE enrollments SET progress = ? WHERE user_id = ? AND course_id = ?", 
-      [progress, userId, courseId], 
-      (err, result) => {
-          if (err) return res.status(500).send(err);
-          res.send("進度已更新！");
-  });
+  db.query("UPDATE enrollments SET progress = ? WHERE user_id = ? AND course_id = ?",
+    [progress, userId, courseId],
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+      res.send("進度已更新！");
+    });
 });
 
 //用戶評分課程
 app.post("/rate-course", (req, res) => {
   const { userId, courseId, rating, comment } = req.body;
 
-  db.query("INSERT INTO ratings (user_id, course_id, rating, comment) VALUES (?, ?, ?, ?)", 
-      [userId, courseId, rating, comment], 
-      (err, result) => {
-          if (err) return res.status(500).send(err);
-          res.send("成功提交評分！");
-  });
+  db.query("INSERT INTO ratings (user_id, course_id, rating, comment) VALUES (?, ?, ?, ?)",
+    [userId, courseId, rating, comment],
+    (err, result) => {
+      if (err) return res.status(500).send(err);
+      res.send("成功提交評分！");
+    });
 });
 
 //推薦課程（基於相似分類）
@@ -126,33 +126,47 @@ app.get("/recommend/:userId", (req, res) => {
   const userId = req.params.userId;
 
   db.query(`
-      SELECT DISTINCT c.* FROM courses c
-      JOIN enrollments e ON c.id = e.course_id
-      WHERE e.user_id = ? 
-      ORDER BY RAND() 
-      LIMIT 5
+    SELECT DISTINCT c.* FROM courses c
+    JOIN enrollments e ON c.id = e.course_id
+    WHERE e.user_id = ? 
+    ORDER BY RAND() 
+    LIMIT 5
   `, [userId], (err, results) => {
-      if (err) return res.status(500).send(err);
-      res.json(results);
+    if (err) return res.status(500).send(err);
+    res.json(results);
   });
 });
 
-app.get("/search", async (req, res) => {
-  try {
-      const { category, tag } = req.query;
-      let whereClause = {};
+// 關鍵字搜尋課程（標題、描述、類別）
+app.get("/search", (req, res) => {
+  const query = req.query.query;
 
-      if (category) whereClause.category = category;
-      if (tag) whereClause.tags = { [db.Sequelize.Op.contains]: [tag] };
-
-      const courses = await db.Course.findAll({ where: whereClause });
-      res.json(courses);
-  } catch (err) {
-      console.error("課程搜尋失敗:", err);
-      res.status(500).send("伺服器錯誤");
+  if (!query || query.trim() === "") {
+    return res.status(400).send("請提供搜尋關鍵字");
   }
-});
 
+  const sql = `
+    SELECT * FROM courses
+    WHERE title LIKE ? OR description LIKE ? OR category LIKE ?
+    LIMIT 20
+  `;
+  const keyword = `%${query}%`;
+
+  db.query(sql, [keyword, keyword, keyword], (err, results) => {
+    if (err) {
+      console.error("搜尋錯誤:", err);
+      return res.status(500).send("伺服器錯誤");
+    }
+
+    results.forEach(course => {
+      if (course.image_path) {
+        course.image_path = `http://localhost:5000/${course.image_path}`;
+      }
+    });
+
+    res.json(results);
+  });
+});
 
 // 簡單測試用路由
 app.get('/', (req, res) => {

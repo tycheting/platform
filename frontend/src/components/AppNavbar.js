@@ -36,7 +36,7 @@ function AppNavbar() {
               to="/featured"
               className={`${styles.navLink} ${isActive("/featured") ? styles.active : ""}`}
             >
-              推薦課程
+              ✦ 推薦課程
             </Nav.Link>
             <Nav.Link
               as={Link}

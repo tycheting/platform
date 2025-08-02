@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import WhiteBox from '../components/WhiteBox'; // ✅ 引入白底元件
 import './Courses.css';
 
 function Courses() {
@@ -10,7 +11,6 @@ function Courses() {
   useEffect(() => {
     fetchCourses();
   }, []);
-
 
   const fetchCourses = async () => {
     try {
@@ -23,23 +23,24 @@ function Courses() {
 
   return (
     <Container className="mt-4">
-      <h2 className="featured-title">精選課程</h2>
-      <Row>
-        {courses.map(course => (
-          <Col key={course.id} xs={12} sm={6} md={4} lg={4} className="mb-4">
-            <Link to={`/courses/${course.id}`} className="course-link">
-              <div className="course-image-container">
-                <img 
-                  src={course.image_path} 
-                  alt={course.title} 
-                  className="course-image"
-                />
-              </div>
-              <h5 className="course-title">{course.title}</h5>
-            </Link>
-          </Col>
-        ))}
-      </Row>
+      <WhiteBox>
+        <Row>
+          {courses.map(course => (
+            <Col key={course.id} xs={12} sm={6} md={4} lg={4} className="mb-4">
+              <Link to={`/courses/${course.id}`} className="course-link">
+                <div className="course-image-container">
+                  <img 
+                    src={course.image_path} 
+                    alt={course.title} 
+                    className="course-image"
+                  />
+                </div>
+                <h5 className="course-title">{course.title}</h5>
+              </Link>
+            </Col>
+          ))}
+        </Row>
+      </WhiteBox>
     </Container>
   );
 }

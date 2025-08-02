@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Spinner, Button } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import WhiteBox from '../components/WhiteBox';
 import './CoursesDetail.css';
 
 function CourseDetail() {
@@ -65,52 +66,54 @@ function CourseDetail() {
   ];
 
   return (
-    <Container className="course-detail-container">
-      {!isEnrolled ? (
-        <>
-          <div className="intro-layout">
-            <div className="video-container flex-shrink-0">
-              <video className="course-video" controls poster={course.image_path || ""}>
-                <source src={course.video_path} type="video/mp4" />
-                您的瀏覽器不支援 HTML5 影片標籤。
-              </video>
-            </div>
-
-            <div className="course-intro">
-              <h1 className="course-title">{course.title}</h1>
-              <p className="course-description">{course.description}</p>
-              <Button className="enroll-button" onClick={handleEnroll}>選課</Button>
-            </div>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="playlist-layout d-flex flex-column flex-lg-row gap-4">
-            <div className="chapter-playlist">
-              {chapters.map((ch, idx) => (
-                <div
-                  key={idx}
-                  className={`playlist-item ${selectedChapter === idx ? 'active' : ''}`}
-                  onClick={() => setSelectedChapter(idx)}
-                >
-                  {ch.title}
-                </div>
-              ))}
-            </div>
-
-            <div className="player-area">
-              <div className="video-container">
+    <Container className="mt-4">
+      <WhiteBox>
+        {!isEnrolled ? (
+          <>
+            <div className="intro-layout">
+              <div className="video-container flex-shrink-0">
                 <video className="course-video" controls poster={course.image_path || ""}>
-                  <source src={chapters[selectedChapter].video_url} type="video/mp4" />
+                  <source src={course.video_path} type="video/mp4" />
                   您的瀏覽器不支援 HTML5 影片標籤。
                 </video>
               </div>
-              <h2 className="chapter-title">{chapters[selectedChapter].title}</h2>
-              <p className="chapter-content">{chapters[selectedChapter].content}</p>
+
+              <div className="course-intro">
+                <h1 className="course-title">{course.title}</h1>
+                <p className="course-description">{course.description}</p>
+                <Button className="enroll-button" onClick={handleEnroll}>選課</Button>
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        ) : (
+          <>
+            <div className="playlist-layout d-flex flex-column flex-lg-row gap-4">
+              <div className="chapter-playlist">
+                {chapters.map((ch, idx) => (
+                  <div
+                    key={idx}
+                    className={`playlist-item ${selectedChapter === idx ? 'active' : ''}`}
+                    onClick={() => setSelectedChapter(idx)}
+                  >
+                    {ch.title}
+                  </div>
+                ))}
+              </div>
+
+              <div className="player-area">
+                <div className="video-container">
+                  <video className="course-video" controls poster={course.image_path || ""}>
+                    <source src={chapters[selectedChapter].video_url} type="video/mp4" />
+                    您的瀏覽器不支援 HTML5 影片標籤。
+                  </video>
+                </div>
+                <h2 className="chapter-title">{chapters[selectedChapter].title}</h2>
+                <p className="chapter-content">{chapters[selectedChapter].content}</p>
+              </div>
+            </div>
+          </>
+        )}
+      </WhiteBox>
     </Container>
   );
 }
