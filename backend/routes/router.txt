@@ -1,0 +1,12 @@
+| 功能   | 方法   | 路徑                            |
+| ---- | ---- | ----------------------------- |
+| 註冊   | POST | `/auth/register`              |
+| 登入   | POST | `/auth/login`                 |
+| 所有課程 | GET  | `/courses`                    |
+| 課程詳情 | GET  | `/courses/:id`                |
+| 分類課程 | GET  | `/courses/category/:category` |
+| 搜尋課程 | GET  | `/courses/search?query=關鍵字`   |
+| 報名課程 | POST | `/enroll`                     |
+| 更新進度 | POST | `/enroll/progress`            |
+| 評分課程 | POST | `/enroll/rate`                |
+| 推薦課程 | GET  | `/recommend/:userId`          |
