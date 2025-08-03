@@ -1,21 +1,40 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./SearchBar.css";
 import { FaSearch, FaMicrophone } from "react-icons/fa";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isActive, setIsActive] = useState(false);
-  const inputRef = useRef(null); // ⭐ 取得輸入框的 DOM
+  const [hasCleared, setHasCleared] = useState(false); 
+  const inputRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const query = params.get("query");
+    if (query) {
+      setSearchTerm(query);
+      setIsActive(true);
+    }
+  }, [location.search]);
+
+  const handleFocus = () => {
+    if (!hasCleared) {
+      setSearchTerm("");
+      setHasCleared(true);
+      setIsActive(false);
+    }
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!searchTerm.trim()) return;
+  e.preventDefault();
+  if (!searchTerm.trim()) return;
 
-    navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
-    setSearchTerm("");
-    setIsActive(false);
+  navigate(`/search?query=${encodeURIComponent(searchTerm.trim())}`);
+  inputRef.current.blur();
+  setHasCleared(false);
   };
 
   const handleChange = (e) => {
@@ -28,16 +47,17 @@ const SearchBar = () => {
     <form
       className={`search-container ${isActive ? "active" : ""}`}
       onSubmit={handleSubmit}
-      onClick={() => inputRef.current?.focus()} // 點整個表單聚焦輸入框
+      onClick={() => inputRef.current?.focus()}
     >
       <FaSearch className="search-icon" />
       <input
-        ref={inputRef} // 綁定 ref
+        ref={inputRef}
         className="search-input"
         type="text"
-        placeholder="搜尋課程、主題、老師"
+        placeholder="搜尋課程、主題 ——"
         value={searchTerm}
         onChange={handleChange}
+        onFocus={handleFocus}
       />
       <button type="submit" className="search-button" title="搜尋">
         <FaMicrophone />
