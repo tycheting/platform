@@ -4,7 +4,8 @@
 | 登入   | POST | `/auth/login`                 |
 | 所有課程 | GET  | `/courses`                    |
 | 課程詳情 | GET  | `/courses/:id`                |
-| 分類課程 | GET  | `/courses/category/:category` |
+單一分類查詢	/courses/category?category=語言
+多分類查詢	/courses/category?category=語言,藝術,程式
 | 搜尋課程 | GET  | `/courses/search?query=關鍵字`   |
 | 報名課程 | POST | `/enroll`                     |
 | 更新進度 | POST | `/enroll/progress`            |

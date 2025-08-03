@@ -27,20 +27,32 @@ router.get("/:id", (req, res) => {
   });
 });
 
-// 分類查詢
-router.get("/category/:category", (req, res) => {
-  const category = req.params.category;
+// 分類
+// 支援單一或多分類查詢：/courses/category?category=語言 或 category=語言,藝術
+router.get("/category", (req, res) => {
+  const categoryParam = req.query.category;
 
-  req.db.query("SELECT * FROM courses WHERE category = ?", [category], (err, results) => {
+  if (!categoryParam) {
+    return res.status(400).send("請提供分類參數，例如 ?category=語言 或 ?category=語言,藝術");
+  }
+
+  const categories = categoryParam.split(",").map(c => c.trim());
+  const placeholders = categories.map(() => "?").join(", ");
+  const sql = `SELECT * FROM courses WHERE category IN (${placeholders})`;
+
+  req.db.query(sql, categories, (err, results) => {
     if (err) return res.status(500).send(err);
+
     results.forEach(course => {
       if (course.image_path) {
         course.image_path = `http://localhost:5000/${course.image_path}`;
       }
     });
+
     res.json(results);
   });
 });
+
 
 // 搜尋（標題、描述、類別）
 router.get("/search", (req, res) => {
