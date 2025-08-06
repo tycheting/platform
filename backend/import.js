@@ -17,10 +17,10 @@ async function importCourse(csvFilePath) {
             course_id: row.course_id,
             title: row.course_name,
             description: row.course_syllabus,
-            category: row.category,
+            category: row.course_category,
             tags: tags,
             video_path: '', // 你可以視情況補上預設值
-            image_path: '',
+            image_path: 'images/default_course.png',
             createdAt: new Date(),
             updatedAt: new Date()
           });
@@ -48,7 +48,7 @@ async function importCourse(csvFilePath) {
     await sequelize.authenticate();
     console.log('✅ 資料庫連線成功');
 
-    await importCourse(path.join(__dirname, 'course_info_final.csv'));
+    await importCourse(path.join(__dirname, 'course_info_with_embeddings.csv'));
 
     await sequelize.close();
   } catch (error) {

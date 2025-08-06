@@ -16,7 +16,7 @@ function SearchResults() {
   useEffect(() => {
     if (query && query.trim() !== "") {
       axios
-        .get(`http://localhost:5000/search?query=${encodeURIComponent(query)}`)
+        .get(`http://localhost:5000/courses/search?query=${encodeURIComponent(query)}`)
         .then((res) => {
           setResults(res.data);
           setLoading(false);

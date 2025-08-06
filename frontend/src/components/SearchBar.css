@@ -24,9 +24,18 @@
   background-color: #fdfdfd;
 }
 
-.search-icon,
-.search-button {
+.search-icon {
   font-size: 18px;
+  color: #888;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  margin-right: 12px;
+}
+
+.search-button {
+  font-size: 24px;
   color: #888;
   background: transparent;
   border: none;

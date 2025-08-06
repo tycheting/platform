@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./SearchBar.css";
 import { FaSearch, FaMicrophone } from "react-icons/fa";
+import { FaStar, FaRegStar, FaStarOfLife } from "react-icons/fa";
 
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,13 +55,13 @@ const SearchBar = () => {
         ref={inputRef}
         className="search-input"
         type="text"
-        placeholder="搜尋課程、主題 ——"
+        placeholder="搜尋課程、主題、關鍵字"
         value={searchTerm}
         onChange={handleChange}
         onFocus={handleFocus}
       />
       <button type="submit" className="search-button" title="搜尋">
-        <FaMicrophone />
+        ✦
       </button>
     </form>
   );
