@@ -33,6 +33,8 @@ app.use("/auth", require("./routes/auth"));
 app.use("/courses", require("./routes/courses"));
 app.use("/enroll", require("./routes/enrollments"));
 app.use("/recommend", require("./routes/recommend"));
+app.use("/user", require("./routes/user"));
+app.use("/track", require("./routes/track"));
 
 // 測試首頁
 app.get("/", (req, res) => res.send("Hello from Express!"));
