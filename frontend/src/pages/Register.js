@@ -14,15 +14,22 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', {
+      const res = await axios.post('http://localhost:5000/auth/register', {
         email,
         password,
         name
       });
-      setMsg(res.data.msg);
+
+      // 顯示成功訊息
+      setMsg(res.data.msg || '註冊成功');
+
+      // ✅ 1秒後自動跳轉到登入頁
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
     } catch (error) {
-      if (error.response) {
-        setMsg(error.response.data.msg || '註冊失敗');
+      if (error.response && typeof error.response.data === 'string') {
+        setMsg(error.response.data);
       } else {
         setMsg('註冊失敗（伺服器無回應）');
       }

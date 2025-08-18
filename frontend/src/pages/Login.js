@@ -13,14 +13,19 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', {
+      const res = await axios.post('http://localhost:5000/auth/login', {
         email,
         password
       });
-      setMsg(res.data.msg);
+
+      // 儲存 token
+      localStorage.setItem("token", res.data.token);
+
+      // 導向我的課程頁
+      navigate("/my-courses");
     } catch (error) {
-      if (error.response) {
-        setMsg(error.response.data.msg || '登入失敗');
+      if (error.response && typeof error.response.data === 'string') {
+        setMsg(error.response.data);
       } else {
         setMsg('登入失敗（伺服器無回應）');
       }
@@ -32,14 +37,12 @@ function Login() {
       className="login-page"
       style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)` }}
     >
-      {/* LOGO 漂浮在登入卡片外部上方 */}
       <img
         src={`${process.env.PUBLIC_URL}/logo2.png`}
         alt="Logo"
         className="login-float-logo"
       />
 
-      {/* 登入卡片本體 */}
       <div className="login-card">
         <h2 className="login-title">登入</h2>
         <form onSubmit={handleSubmit}>
