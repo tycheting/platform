@@ -1,4 +1,3 @@
-// src/pages/Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -18,10 +17,13 @@ function Login() {
         password
       });
 
-      // 儲存 token
-      localStorage.setItem("token", res.data.token);
+      const token = res.data.token;
+      localStorage.setItem("token", token);
 
-      // 導向我的課程頁
+      // 解碼 JWT，存進 userName
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      localStorage.setItem("userName", payload.name);
+
       navigate("/my-courses");
     } catch (error) {
       if (error.response && typeof error.response.data === 'string') {

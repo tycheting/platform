@@ -1,4 +1,3 @@
-// src/pages/Register.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -20,13 +19,15 @@ function Register() {
         name
       });
 
-      // 顯示成功訊息
-      setMsg(res.data.msg || '註冊成功');
+      const token = res.data.token;
+      localStorage.setItem("token", token);
 
-      // ✅ 1秒後自動跳轉到登入頁
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
+      // ✅ 解碼 JWT，存進 userName
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      localStorage.setItem("userName", payload.name);
+
+      // ✅ 註冊後直接導向 /my-courses
+      navigate("/my-courses");
     } catch (error) {
       if (error.response && typeof error.response.data === 'string') {
         setMsg(error.response.data);
@@ -41,7 +42,6 @@ function Register() {
       className="register-page"
       style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/background.png)` }}
     >
-      {/* LOGO 漂浮在註冊卡片外部上方 */}
       <img
         src={`${process.env.PUBLIC_URL}/logo2.png`}
         alt="Logo"

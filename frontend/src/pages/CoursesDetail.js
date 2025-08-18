@@ -1,4 +1,3 @@
-// src/pages/CoursesDetail.js
 import React, { useEffect, useState } from 'react';
 import { Container, Spinner, Button, Tabs, Tab } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
@@ -14,6 +13,7 @@ function CourseDetail() {
 
   useEffect(() => {
     getCourseDetail(id);
+    checkIfEnrolled(id);
   }, [id]);
 
   const getCourseDetail = async (courseId) => {
@@ -27,8 +27,57 @@ function CourseDetail() {
     }
   };
 
-  const handleEnroll = () => {
-    setIsEnrolled(true);
+  const checkIfEnrolled = async (courseId) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await axios.get("http://localhost:5000/user/my-courses", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const enrolledCourseIds = res.data.map(item => item.course_id);
+      if (enrolledCourseIds.includes(parseInt(courseId))) {
+        setIsEnrolled(true);
+      }
+    } catch (err) {
+      console.error("檢查選課狀態失敗", err);
+    }
+  };
+
+  const handleEnroll = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return alert("請先登入");
+
+    try {
+      await axios.post("http://localhost:5000/enroll", { courseId: id }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // 記錄選課行為
+      await axios.post("http://localhost:5000/track", {
+        courseId: id,
+        actionType: "action_enroll_course"
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setIsEnrolled(true);
+      alert("已成功選課！");
+    } catch (error) {
+      console.error("選課失敗", error);
+      alert("選課失敗，請稍後再試");
+    }
+  };
+
+  const handleTrackAction = (type) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    axios.post("http://localhost:5000/track", {
+      courseId: id,
+      actionType: type
+    }, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
   };
 
   if (loading) {
@@ -55,10 +104,17 @@ function CourseDetail() {
 
   return (
     <Container className="course-detail-container">
-      {/* 上方：影片與資訊左右排列 */}
       <div className="course-hero-layout">
         <div className="video-container">
-          <video className="course-video" controls poster={course.image_path || ""}>
+          <video
+            className="course-video"
+            controls
+            poster={course.image_path || ""}
+            onPlay={() => handleTrackAction("action_play_video")}
+            onPause={() => handleTrackAction("action_pause_video")}
+            onEnded={() => handleTrackAction("action_stop_video")}
+            onSeeked={() => handleTrackAction("action_seek_video")}
+          >
             <source src={chapters[selectedChapter].video_url} type="video/mp4" />
             您的瀏覽器不支援 HTML5 影片標籤。
           </video>
@@ -67,19 +123,25 @@ function CourseDetail() {
         <div className="course-info-panel">
           <h1 className="course-title">{course.title}</h1>
           <p className="course-description">{course.description}</p>
-          {!isEnrolled && (
+          {!isEnrolled ? (
             <Button className="enroll-button mt-2" onClick={handleEnroll}>選課</Button>
+          ) : (
+            <span className="text-success fw-bold">已選課</span>
           )}
         </div>
       </div>
 
-      {/* 下方 Tabs */}
       <Tabs defaultActiveKey="chapters" className="course-tabs mt-5" justify>
         <Tab eventKey="chapters" title="課程章節">
           <div className="chapter-tab-content mt-4 d-flex flex-column flex-lg-row gap-4">
             <div className="left-panel flex-grow-1">
               <div className="video-container">
-                <video className="course-video" controls poster={course.image_path || ""}>
+                <video
+                  className="course-video"
+                  controls
+                  poster={course.image_path || ""}
+                  onPlay={() => handleTrackAction("action_play_video")}
+                >
                   <source src={chapters[selectedChapter].video_url} type="video/mp4" />
                   您的瀏覽器不支援 HTML5 影片標籤。
                 </video>
@@ -128,7 +190,7 @@ function CourseDetail() {
               <li>
                 <button
                   className="material-link"
-                  onClick={() => alert('🔽 模擬下載：講義.pdf')}
+                  onClick={() => handleTrackAction("action_click_courseware")}
                 >
                   講義.pdf
                 </button>
@@ -136,7 +198,7 @@ function CourseDetail() {
               <li>
                 <button
                   className="material-link"
-                  onClick={() => alert('🔽 模擬下載：範例程式碼.zip')}
+                  onClick={() => handleTrackAction("action_click_courseware")}
                 >
                   範例程式碼.zip
                 </button>

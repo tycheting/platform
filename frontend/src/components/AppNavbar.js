@@ -1,13 +1,24 @@
+// src/components/AppNavbar.js
+
 import React from "react";
 import { Navbar, Nav, Button } from "react-bootstrap";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from './AppNavbar.module.css';
 import logo from "./logo.png";
 
 function AppNavbar() {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // 判斷目前路由是否符合指定 path
+  const userName = localStorage.getItem("userName");
+  const isLoggedIn = !!localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userName");
+    navigate("/"); // 登出後導向首頁
+  };
+
   const isActive = (path) => location.pathname === path;
 
   return (
@@ -55,16 +66,43 @@ function AppNavbar() {
           </Nav>
         </div>
 
-        {/* 右側：按鈕 */}
-        <div className="d-flex justify-content-end gap-2" style={{ width: "20%" }}>
-          <Button variant="outline-dark" size="sm" as={Link} to="/login" className={styles.navButton}>
-            登入
-          </Button>
-          <Button variant="dark" size="sm" as={Link} to="/register" className={styles.navButton}>
-            註冊
-          </Button>
+        {/* 右側：登入/註冊 或 使用者名稱＋登出 */}
+        <div className="d-flex justify-content-end align-items-center gap-2" style={{ width: "20%" }}>
+          {isLoggedIn ? (
+            <>
+              <span className={styles.navUser}>{userName}</span>
+              <Button
+                variant="outline-danger"
+                size="sm"
+                className={styles.navButton}
+                onClick={handleLogout}
+              >
+                登出
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="outline-dark"
+                size="sm"
+                as={Link}
+                to="/login"
+                className={styles.navButton}
+              >
+                登入
+              </Button>
+              <Button
+                variant="dark"
+                size="sm"
+                as={Link}
+                to="/register"
+                className={styles.navButton}
+              >
+                註冊
+              </Button>
+            </>
+          )}
         </div>
-
       </div>
     </Navbar>
   );

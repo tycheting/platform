@@ -10,6 +10,7 @@ router.get("/my-courses", authenticateToken, (req, res) => {
     SELECT 
       c.id AS course_id,
       c.title,
+      c.description,
       c.image_path,
       c.video_path,
       a.action_type,
@@ -22,6 +23,16 @@ router.get("/my-courses", authenticateToken, (req, res) => {
 
   req.db.query(query, [userId], (err, results) => {
     if (err) return res.status(500).send("查詢失敗");
+
+    results.forEach(course => {
+      if (course.image_path) {
+        course.image_path = `http://localhost:5000/${course.image_path}`;
+      }
+      if (course.video_path) {
+        course.video_path = `http://localhost:5000/${course.video_path}`;
+      }
+    });
+
     res.json(results);
   });
 });
