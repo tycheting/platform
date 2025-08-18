@@ -11,7 +11,7 @@ router.post('/', (req, res) => {
     return res.status(400).json({ error: "username is required" });
   }
 
-  const scriptPath = "C:/Users/user/Desktop/project0/f/recommend.py";
+  const scriptPath = "C:/Users/user/Desktop/project0/recommend/recommend.py";
   const python = spawn('python', [scriptPath], { stdio: ['pipe', 'pipe', 'pipe'] });
 
   python.stdin.write(JSON.stringify({ username }));
