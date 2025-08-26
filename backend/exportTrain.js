@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { Parser } = require('json2csv');
-const { sequelize, user_course_actions, users, courses } = require('../models'); // 修改為你的 models 匯出方式
+const { sequelize, user_course_actions, users, courses } = require('./models'); // 修改為你的 models 匯出方式
 
 const ACTION_LIST = [
   'action_click_about',
@@ -61,8 +61,8 @@ const ACTION_LIST = [
     const parser = new Parser({ fields });
     const csv = parser.parse(data);
 
-    fs.writeFileSync('./Train.csv', csv, 'utf-8');
-    console.log('Train.csv 匯出成功！');
+    fs.writeFileSync('./user_action.csv', csv, 'utf-8');
+    console.log('csv匯出成功');
   } catch (err) {
     console.error('匯出失敗：', err);
   } finally {

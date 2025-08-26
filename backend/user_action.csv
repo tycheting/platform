@@ -1,0 +1,4 @@
+"username","course_id","action_click_about","action_click_courseware","action_click_forum","action_click_info","action_click_progress","action_close_courseware","action_close_forum","action_create_comment","action_create_thread","action_delete_comment","action_delete_thread","action_load_video","action_pause_video","action_play_video","action_problem_check","action_problem_check_correct","action_problem_check_incorrect","action_problem_get","action_problem_save","action_reset_problem","action_seek_video","action_stop_video","unique_session_count","avg_nActions_per_session"
+5,12844,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+5,12833,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+5,12963,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
