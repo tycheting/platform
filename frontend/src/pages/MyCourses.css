@@ -1,10 +1,48 @@
-/* WhiteBox 的樣式 */
-.white-box {
+/* 只作用在 MyCourses 頁面 */
+.mycourses-page .white-box {
   padding: 18px 24px 24px 24px;
 }
 
-/* 搜尋結果列表容器 */
-.search-result-list {
+/* ───── 標題：中間圖片 + 左右線（限定 MyCourses） ───── */
+.mycourses-page .title-with-lines {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px 0 24px;
+  padding: 8px 0;
+}
+
+.mycourses-page .title-with-lines::before,
+.mycourses-page .title-with-lines::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;             /* 線條粗細 */
+  background: #000000;        /* 線條顏色 */
+  opacity: 0.5;
+}
+
+.mycourses-page .title-with-lines::before { margin-right: 16px; }
+.mycourses-page .title-with-lines::after  { margin-left: 16px; }
+
+/* 標題圖片大小（可依需要調整高度） */
+.mycourses-page .title-image {
+  display: block;
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* 響應式：小螢幕讓圖片再小一點 */
+@media (max-width: 576px) {
+  .mycourses-page .title-image {
+    height: 32px;
+  }
+}
+
+/* ───── 搜尋結果列表容器 ───── */
+.mycourses-page .search-result-list {
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -12,7 +50,7 @@
 }
 
 /* 每一筆課程卡片 */
-.search-result-item {
+.mycourses-page .search-result-item {
   display: flex;
   gap: 24px;
   text-decoration: none;
@@ -22,14 +60,13 @@
   transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
-.search-result-item:hover {
+.mycourses-page .search-result-item:hover {
   background-color: #f7f7f7;
-  transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* 圖片容器 */
-.result-image-wrapper {
+.mycourses-page .result-image-wrapper {
   width: 350px;
   flex-shrink: 0;
   border-radius: 12px;
@@ -38,7 +75,7 @@
   position: relative;
 }
 
-.result-image {
+.mycourses-page .result-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -46,18 +83,18 @@
   transition: transform 0.35s ease-in-out, box-shadow 0.35s ease-in-out;
 }
 
-.search-result-item:hover .result-image {
+.mycourses-page .search-result-item:hover .result-image {
   transform: scale(1.03);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* 課程內容區塊 */
-.result-content {
+.mycourses-page .result-content {
   flex: 1;
 }
 
 /* 課程標題與描述 */
-.result-title {
+.mycourses-page .result-title {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 8px;
@@ -70,8 +107,19 @@
   white-space: normal;
 }
 
-.result-description {
+.mycourses-page .result-description {
   color: #444;
   font-size: 15px;
   line-height: 1.5;
+}
+
+/* 響應式：小螢幕卡片改為直向排列 */
+@media (max-width: 768px) {
+  .mycourses-page .search-result-item {
+    flex-direction: column;
+  }
+  .mycourses-page .result-image-wrapper {
+    width: 100%;
+    height: 200px;
+  }
 }

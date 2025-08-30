@@ -26,7 +26,7 @@ function MyCourses() {
 
   // ✅ 圖片路徑處理：補上完整網址
   const getImageUrl = (imagePath) => {
-    if (!imagePath) return ''; // 防呆
+    if (!imagePath) return '';
     if (imagePath.startsWith('http')) return imagePath;
     if (imagePath.startsWith('/images')) {
       return `http://localhost:5000${imagePath}`;
@@ -35,9 +35,11 @@ function MyCourses() {
   };
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-4 mycourses-page">
       <WhiteBox className="white-box">
-        <h2 className="mb-4">我的課程</h2>
+        <div className="title-with-lines">
+          <img src="/已選課程.png" alt="我的課程" className="title-image" />
+        </div>
 
         <div className="search-result-list">
           {courses.map(course => (

@@ -1,6 +1,8 @@
+// src/pages/Register.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { saveAuth } from '../auth'; // ⬅ 新增：用統一的保存流程
 import './Register.css';
 
 function Register() {
@@ -20,11 +22,9 @@ function Register() {
       });
 
       const token = res.data.token;
-      localStorage.setItem("token", token);
 
-      // ✅ 解碼 JWT，存進 userName
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      localStorage.setItem("userName", payload.name);
+      // ✅ 用 auth.js 統一保存（含 userName、exp、以及自動登出排程）
+      saveAuth(token);
 
       // ✅ 註冊後直接導向 /my-courses
       navigate("/my-courses");
@@ -53,10 +53,12 @@ function Register() {
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="姓名"
+            placeholder="用戶 ID"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            pattern="[A-Za-z\s]+"
+            title="姓名只能輸入英文（A-Z 與空格）"
           />
           <input
             type="email"

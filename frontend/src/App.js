@@ -1,6 +1,9 @@
-import React from "react";
+// src/App.js（只展示有改的 useEffect）
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { isTokenExpired, logout, scheduleAutoLogout } from "./auth";
 
 import AppNavbar from './components/AppNavbar';
 import Footer from './components/Footer';
@@ -17,9 +20,38 @@ import SearchResults from './pages/SearchResults';
 
 function AppContent() {
   const location = useLocation();
-  const hideSearchBar = 
-  location.pathname.startsWith("/courses/") ||
-  ["/login", "/register"].includes(location.pathname);
+  const hideSearchBar =
+    location.pathname.startsWith("/courses/") ||
+    ["/login", "/register"].includes(location.pathname);
+
+  useEffect(() => {
+    const pathname = location.pathname;
+
+    // 定義公開路由（不強制踢出）
+    const isPublicPath =
+      pathname === "/" ||
+      pathname === "/featured" ||
+      pathname === "/courses" ||
+      pathname.startsWith("/courses/") || // 詳情頁仍視為公開，如果你要鎖再移到受保護清單
+      pathname === "/login" ||
+      pathname === "/register" ||
+      pathname === "/search";
+
+    if (isPublicPath) {
+      // 在公開頁面：如果已登入，就排一次自動登出；未登入就什麼都不做
+      if (!isTokenExpired()) {
+        scheduleAutoLogout();
+      }
+      return;
+    }
+
+    // 受保護頁面（例如 /my-courses）
+    if (isTokenExpired()) {
+      logout();
+    } else {
+      scheduleAutoLogout();
+    }
+  }, [location.pathname]);
 
   return (
     <>
