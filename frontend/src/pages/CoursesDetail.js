@@ -11,22 +11,21 @@ function CourseDetail() {
   const [selectedChapter, setSelectedChapter] = useState(0);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  // 分頁鍵：discussion | materials | progress | problems | comments | about | info
-  const [bottomTab, setBottomTab] = useState("discussion");
 
-  // 課程總時長 / 用戶總進度（秒＆完成率）
+  // ✅ 預設改為「關於課程」
+  const [bottomTab, setBottomTab] = useState("about");
+
   const [totalDurationSec, setTotalDurationSec] = useState(0);
   const [progressSec, setProgressSec] = useState(0);
   const [progressPercent, setProgressPercent] = useState(0);
 
-  // 量左側影片高度，讓右側章節等高（不含上方標題）
   const videoBoxRef = useRef(null);
   const [videoBoxH, setVideoBoxH] = useState(0);
   const syncHeights = () => {
     if (videoBoxRef.current) setVideoBoxH(videoBoxRef.current.offsetHeight || 0);
   };
 
-  // ====== axios 實例：自動帶 JWT、統一 baseURL ======
+  // ====== axios ======
   const API = useMemo(() => {
     const instance = axios.create({ baseURL: "http://localhost:5000" });
     instance.interceptors.request.use((config) => {
@@ -37,12 +36,14 @@ function CourseDetail() {
     return instance;
   }, []);
 
-  // ====== 影片 ref 與事件回報工具（含時間） ======
+  // ====== 視訊 ref / 事件 ======
   const videoRef = useRef(null);
 
-  // 節流：timeupdate 每 N 秒回報 1 次 watchtime
+  // ✅ 透過 key 來「重建 <video> 元件」以達到重新整理效果
+  const [videoKey, setVideoKey] = useState(0);
+
   const lastReportRef = useRef({ ts: 0, sentSec: 0 });
-  const REPORT_EVERY_MS = 10000; // 每 10 秒回報一次
+  const REPORT_EVERY_MS = 10000;
 
   const getOrInitSessionId = () => {
     const KEY = "session_id";
@@ -65,17 +66,14 @@ function CourseDetail() {
     API.post("/track", { courseId: id, actionType: type, session_id, ...extra }).catch(() => {});
   };
 
-  // 先算出 intro 影片網址（未選課頁用）
   const introVideoUrl = useMemo(() => {
     if (!course) return "";
     return course.intro_video_path || course.video_path || "";
   }, [course]);
 
-  // ====== 僅使用「後端章節」，抓不到就空陣列 ======
   const chapters = useMemo(() => {
     if (!course) return [];
     if (Array.isArray(course.chapters) && course.chapters.length > 0) {
-      // 必須有 id 才保留
       return course.chapters
         .filter((ch) => ch && ch.id)
         .map((ch) => ({
@@ -89,24 +87,18 @@ function CourseDetail() {
     return [];
   }, [course]);
 
-  // 從章節物件取主鍵 id
   const getChapterId = (ch) => ch?.id ?? null;
 
-  // ====== 後端 API 串接：watchtime / duration / progress ======
-
-  // PUT /video/chapters/:chapterId/watchtime  回報單章節觀看進度（body: { watchedSec }）
+  // ====== 後端 API ======
   const putWatchtime = async (chapterId, watchedSec) => {
     if (chapterId === null || chapterId === undefined) return;
     try {
       await API.put(`/video/chapters/${chapterId}/watchtime`, {
         watchedSec: Math.max(0, Math.floor(watchedSec || 0)),
       });
-    } catch {
-      /* 靜默，避免干擾 UX */
-    }
+    } catch {}
   };
 
-  // GET /video/courses/:courseId/duration  讀取課程總時長
   const fetchCourseDuration = async () => {
     try {
       const res = await API.get(`/video/courses/${id}/duration`);
@@ -118,7 +110,6 @@ function CourseDetail() {
     }
   };
 
-  // GET /video/courses/:courseId/progress  讀取用戶整體進度（秒 & %）
   const fetchCourseProgress = async () => {
     try {
       const res = await API.get(`/video/courses/${id}/progress`);
@@ -133,7 +124,6 @@ function CourseDetail() {
     }
   };
 
-  // ====== 影片事件封裝 ======
   const sendVideoEvent = (action) => {
     const v = videoRef.current;
     const cur = v ? Math.floor(v.currentTime || 0) : 0;
@@ -142,7 +132,6 @@ function CourseDetail() {
     handleTrack(action, { currentTime: cur, duration: dur, percent });
   };
 
-  // metadata 載入時：補送 0 秒（建檔用），再抓總時長/進度
   const onLoadedMeta = async () => {
     const ch = chapters[selectedChapter];
     if (!ch) return;
@@ -152,7 +141,6 @@ function CourseDetail() {
     await Promise.all([fetchCourseDuration(), fetchCourseProgress()]);
   };
 
-  // 每 10 秒回報一次 watchtime
   const onTimeUpdate = async () => {
     const now = Date.now();
     const v = videoRef.current;
@@ -169,7 +157,26 @@ function CourseDetail() {
     }
   };
 
-  // 切頁/關閉前補送一次 stop & watchtime
+  // ✅ 切章節：補送前一章 watchtime + stop，切到新章後重建 <video>（key++）
+  const onSelectChapter = async (idx) => {
+    if (!chapters[selectedChapter]) return;
+    const v = videoRef.current;
+    if (v) {
+      const prevId = getChapterId(chapters[selectedChapter]);
+      if (prevId) await putWatchtime(prevId, v.currentTime);
+      sendVideoEvent("action_stop_video");
+    }
+    setSelectedChapter(idx);
+    handleTrack("action_click_courseware", { chapterIndex: idx });
+
+    // 重新整理影片：重建 <video> 元件，時間歸 0、來源重載
+    setVideoKey((k) => k + 1);
+
+    // 章節切換後刷新整體進度
+    fetchCourseProgress();
+  };
+
+  // ====== beforeunload ======
   useEffect(() => {
     const onBeforeUnload = async () => {
       const v = videoRef.current;
@@ -187,7 +194,7 @@ function CourseDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChapter, chapters]);
 
-  // 初始載入：只抓課程資料與是否已選（duration/progress 等到影片 metadata 再抓）
+  // ====== 初始化 ======
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -199,7 +206,6 @@ function CourseDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // 視窗尺寸變更，調整右側高度
   useEffect(() => {
     syncHeights();
     const onResize = () => syncHeights();
@@ -246,43 +252,24 @@ function CourseDetail() {
     }
   };
 
-  // 分頁切換：回報點擊與離開
+  // ✅ 分頁切換（名稱不變，只是呈現順序改了）
   const switchTab = (nextTab) => {
     if (bottomTab === nextTab) return;
 
-    // 先送「離開」事件（僅討論區/教材區有 close）
     if (bottomTab === "discussion") handleTrack("action_close_forum");
     if (bottomTab === "materials") handleTrack("action_close_courseware");
 
-    // 送「進入」事件
     if (nextTab === "discussion") handleTrack("action_click_forum");
     if (nextTab === "materials") handleTrack("action_click_courseware");
     if (nextTab === "progress") handleTrack("action_click_progress");
-    if (nextTab === "problems") handleTrack("action_problem_get"); // 進入題目區=載入題目
-    if (nextTab === "comments") {
-      // 進留言區先不送 create，等使用者真的提交再送 action_create_comment
-    }
+    if (nextTab === "problems") handleTrack("action_problem_get");
+    if (nextTab === "comments") { /* 實際送在提交時 */ }
     if (nextTab === "about") handleTrack("action_click_about");
     if (nextTab === "info") handleTrack("action_click_info");
 
     setBottomTab(nextTab);
   };
 
-  // 點章節：切換前補送一次 stop & watchtime，切換後刷新整體進度
-  const onSelectChapter = async (idx) => {
-    if (!chapters[selectedChapter]) return;
-    const v = videoRef.current;
-    if (v) {
-      const prevId = getChapterId(chapters[selectedChapter]);
-      if (prevId) await putWatchtime(prevId, v.currentTime);
-      sendVideoEvent("action_stop_video");
-    }
-    setSelectedChapter(idx);
-    handleTrack("action_click_courseware", { chapterIndex: idx });
-    fetchCourseProgress();
-  };
-
-  // ========= Loading / Error =========
   if (loading) {
     return (
       <Container className="mt-4 text-center">
@@ -306,6 +293,7 @@ function CourseDetail() {
           <div className="hero-unenrolled__video">
             {introVideoUrl ? (
               <video
+                key={videoKey}             // ✅ 未選課區也加 key，確保重載
                 ref={videoRef}
                 className="course-video"
                 controls
@@ -362,7 +350,6 @@ function CourseDetail() {
     <Container className="course-detail-container">
       <h1 className="cd-title cd-top">{course.title}</h1>
 
-      {/* 影片（左） + 章節（右）等高 */}
       <div className="player-grid">
         <div className="video-wrapper" ref={videoBoxRef}>
           {chapters.length === 0 ? (
@@ -371,6 +358,7 @@ function CourseDetail() {
             </div>
           ) : (
             <video
+              key={videoKey}               // ✅ 透過 key 觸發重建 => 重新整理影片
               ref={videoRef}
               className="course-video"
               controls
@@ -395,7 +383,6 @@ function CourseDetail() {
           )}
         </div>
 
-        {/* 章節清單固定為左側影片高度，可捲動；選中的章節顯示其簡介 */}
         <aside className="sidebar-playlist no-frame fixed">
           <div
             className="chapter-list no-frame fill"
@@ -423,65 +410,70 @@ function CourseDetail() {
         </aside>
       </div>
 
-      {/* 下方分頁 */}
+      {/* 分頁順序已調整 */}
       <div className="white-box">
         <div className="category-bar" style={{ animation: "fadeSlideDown .25s ease both" }}>
-          <div
-            className={`category-item ${bottomTab === "discussion" ? "active" : ""}`}
-            onClick={() => switchTab("discussion")}
-          >
-            討論區
-          </div>
-          <div
-            className={`category-item ${bottomTab === "materials" ? "active" : ""}`}
-            onClick={() => switchTab("materials")}
-          >
-            教材區
-          </div>
-          <div
-            className={`category-item ${bottomTab === "progress" ? "active" : ""}`}
-            onClick={() => switchTab("progress")}
-          >
-            課程進度
-          </div>
-          <div
-            className={`category-item ${bottomTab === "problems" ? "active" : ""}`}
-            onClick={() => switchTab("problems")}
-          >
-            題目區
-          </div>
-          <div
-            className={`category-item ${bottomTab === "comments" ? "active" : ""}`}
-            onClick={() => switchTab("comments")}
-          >
-            留言區
-          </div>
-          <div
-            className={`category-item ${bottomTab === "about" ? "active" : ""}`}
-            onClick={() => switchTab("about")}
-          >
+          <div className={`category-item ${bottomTab === "about" ? "active" : ""}`} onClick={() => switchTab("about")}>
             關於課程
           </div>
-          <div
-            className={`category-item ${bottomTab === "info" ? "active" : ""}`}
-            onClick={() => switchTab("info")}
-          >
+          <div className={`category-item ${bottomTab === "info" ? "active" : ""}`} onClick={() => switchTab("info")}>
             課程資訊
+          </div>
+          <div className={`category-item ${bottomTab === "progress" ? "active" : ""}`} onClick={() => switchTab("progress")}>
+            課程進度
+          </div>
+          <div className={`category-item ${bottomTab === "materials" ? "active" : ""}`} onClick={() => switchTab("materials")}>
+            教材區
+          </div>
+          <div className={`category-item ${bottomTab === "problems" ? "active" : ""}`} onClick={() => switchTab("problems")}>
+            題目區
+          </div>
+          <div className={`category-item ${bottomTab === "discussion" ? "active" : ""}`} onClick={() => switchTab("discussion")}>
+            討論區
+          </div>
+          <div className={`category-item ${bottomTab === "comments" ? "active" : ""}`} onClick={() => switchTab("comments")}>
+            留言區
           </div>
         </div>
 
-        {/* 各分頁內容（只吃後端，抓不到就顯示沒有資料） */}
-        {bottomTab === "discussion" && (
+        {/* 關於課程：內容與未選課簡介一致（沿用描述文字與引號樣式） */}
+        {bottomTab === "about" && (
           <div className="tab-body tint-pane">
-            {Array.isArray(course.discussions) && course.discussions.length > 0 ? (
-              <ul className="list-unstyled">
-                {course.discussions.map((d) => (
-                  <li key={d.id} className="mb-2">{d.title}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-muted">找不到討論資料（尚未串接或後端無資料）。</p>
-            )}
+            <div className="desc-with-icons">
+              <img src="/quotes.png" alt="quotes" className="desc-icon left" />
+              <p className="course-description with-tail">
+                {course.description || "找不到課程簡介"}
+                <img src="/close.png" alt="close" className="inline-tail" />
+              </p>
+            </div>
+          </div>
+        )}
+
+        {bottomTab === "info" && (
+          <div className="tab-body tint-pane">
+            <ul>
+              <li>老師 | {course.instructor || "未提供"}</li>
+              <li>課程別 | {course.category || "未提供"}</li>
+              <li>開課單位 | {course.school || "未提供"}</li>
+            </ul>
+          </div>
+        )}
+
+        {bottomTab === "progress" && (
+          <div className="tab-body tint-pane">
+            <p>這裡顯示個人學習進度（已串後端）。</p>
+            <ul>
+              <li>
+                觀看時間：{Math.floor(progressSec / 60)} 分 {progressSec % 60} 秒
+                {" / "}
+                {Math.floor(totalDurationSec / 60)} 分 {totalDurationSec % 60} 秒
+              </li>
+              <li>完成率：{progressPercent}%</li>
+              <li>目前章節：{chapters.length > 0 ? `第 ${selectedChapter + 1} / ${chapters.length}` : "無章節"}</li>
+            </ul>
+            <Button variant="outline-secondary" onClick={() => Promise.all([fetchCourseDuration(), fetchCourseProgress()])}>
+              重新整理進度
+            </Button>
           </div>
         )}
 
@@ -509,27 +501,6 @@ function CourseDetail() {
           </div>
         )}
 
-        {bottomTab === "progress" && (
-          <div className="tab-body tint-pane">
-            <p>這裡顯示個人學習進度（已串後端）。切換到本分頁時已送 action_click_progress。</p>
-            <ul>
-              <li>
-                觀看時間：{Math.floor(progressSec / 60)} 分 {progressSec % 60} 秒
-                {" / "}
-                {Math.floor(totalDurationSec / 60)} 分 {totalDurationSec % 60} 秒
-              </li>
-              <li>完成率：{progressPercent}%</li>
-              <li>目前章節：{chapters.length > 0 ? `第 ${selectedChapter + 1} / ${chapters.length}` : "無章節"}</li>
-            </ul>
-            <Button
-              variant="outline-secondary"
-              onClick={() => Promise.all([fetchCourseDuration(), fetchCourseProgress()])}
-            >
-              重新整理進度
-            </Button>
-          </div>
-        )}
-
         {bottomTab === "problems" && (
           <div className="tab-body tint-pane">
             {Array.isArray(course.problems) && course.problems.length > 0 ? (
@@ -540,6 +511,20 @@ function CourseDetail() {
               </ul>
             ) : (
               <p className="text-muted">找不到題目資料（尚未串接或後端無資料）。</p>
+            )}
+          </div>
+        )}
+
+        {bottomTab === "discussion" && (
+          <div className="tab-body tint-pane">
+            {Array.isArray(course.discussions) && course.discussions.length > 0 ? (
+              <ul className="list-unstyled">
+                {course.discussions.map((d) => (
+                  <li key={d.id} className="mb-2">{d.title}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-muted">找不到討論資料（尚未串接或後端無資料）。</p>
             )}
           </div>
         )}
@@ -555,22 +540,6 @@ function CourseDetail() {
             ) : (
               <p className="text-muted">找不到留言資料（尚未串接或後端無資料）。</p>
             )}
-          </div>
-        )}
-
-        {bottomTab === "about" && (
-          <div className="tab-body tint-pane">
-            <p>{course.about || "找不到課程介紹（尚未串接或後端無資料）。"}</p>
-          </div>
-        )}
-
-        {bottomTab === "info" && (
-          <div className="tab-body tint-pane">
-            <ul>
-              <li>老師：{course.instructor || "未提供"}</li>
-              <li>課程別：{course.category || "未提供"}</li>
-              <li>開課單位：{course.school || "未提供"}</li>
-            </ul>
           </div>
         )}
       </div>

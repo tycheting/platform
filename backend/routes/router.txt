@@ -11,3 +11,28 @@
 | 更新進度 | POST | `/enroll/progress`            |
 | 評分課程 | POST | `/enroll/rate`                |
 | 推薦課程 | GET  | `/recommend/:userId`          |
+
+
+教材(api要改成course
+章節教材列表：GET /api/material/chapters/:chapterId
+
+課程所有教材：GET /api/material/courses/:courseId
+
+新增教材：POST /api/material/chapters/:chapterId
+body: { title, type: 'pdf'|'slides'|'link'|'code'|'image'|'file', url, position? }
+
+刪除教材：DELETE /api/material/:materialId
+
+整章節重排：POST /api/material/chapters/:chapterId/reorder
+body: { orderedIds: [3,5,2,4,...] }
+
+單筆移動：PATCH /api/material/:materialId/position
+body: { position: 2 }
+
+受保護下載：GET /api/material/:materialId/download
+
+之後要做角色權限（例如只有課程建立者/管理員可管理），我可以幫你把 canManage() 改成查 courses.instructor_id 或 users.role 之類的欄位，並在 SQL 裡做比對。
+
+
+
+

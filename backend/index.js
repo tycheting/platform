@@ -8,6 +8,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/videos", express.static("public/videos"));
 app.use("/images", express.static("public/images"));
+app.use("/materials", express.static("public/materials"));
 
 // 資料庫連線
 const db = mysql.createConnection({
@@ -37,7 +38,11 @@ app.use("/enroll", require("./routes/enrollments"));
 app.use("/recommend", require("./routes/recommend"));
 app.use("/user", require("./routes/user"));
 app.use("/track", require("./routes/track"));
-app.use("/video", require("./routes/video")(orm));
+app.use("/course/video", require("./routes/video")(orm));
+app.use("/course/material", require("./routes/materials"));
+app.use("/course/question", require("./routes/questions"));
+app.use('/course/discussion', require('./routes/discussions'));
+app.use('/course/comment', require('./routes/comments'));
 
 // 測試首頁
 app.get("/", (req, res) => res.send("Hello from Express!"));

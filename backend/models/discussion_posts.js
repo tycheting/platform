@@ -31,7 +31,8 @@ module.exports = function (sequelize, DataTypes) {
     underscored: true,
     indexes: [
       { name: 'PRIMARY', unique: true, using: 'BTREE', fields: [{ name: 'id' }] },
-      { name: 'idx_discussion_created', using: 'BTREE', fields: [{ name: 'discussion_id' }, { name: 'created_at' }] }
+      { name: 'idx_discussion_created', using: 'BTREE', fields: [{ name: 'discussion_id' }, { name: 'created_at' }] },
+      { name: 'idx_discussion_parent', using: 'BTREE', fields: [{ name: 'discussion_id' }, { name: 'parent_id' }] }
     ]
   });
 };

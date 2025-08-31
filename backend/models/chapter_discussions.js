@@ -29,6 +29,15 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.BOOLEAN, 
       allowNull: false, 
       defaultValue: false 
+    },
+    posts_count: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    last_reply_at: {
+      type: DataTypes.DATE,
+      allowNull: true
     }
   }, {
     sequelize, tableName: 'chapter_discussions', 
@@ -36,7 +45,9 @@ module.exports = function (sequelize, DataTypes) {
     underscored: true,
     indexes: [
       { name: 'PRIMARY', unique: true, using: 'BTREE', fields: [{ name: 'id' }] },
-      { name: 'idx_chapter_created', using: 'BTREE', fields: [{ name: 'chapter_id' }, { name: 'created_at' }] }
+      { name: 'idx_chapter_created', using: 'BTREE', fields: [{ name: 'chapter_id' }, { name: 'created_at' }] },
+      { name: 'idx_chapter_pinned_lastreply', using: 'BTREE', fields: [{ name: 'chapter_id' }, { name: 'pinned' }, { name: 'last_reply_at' }] },
+      { name: 'idx_chapter_posts_count', using: 'BTREE', fields: [{ name: 'chapter_id' }, { name: 'posts_count' }] }
     ]
   });
 };

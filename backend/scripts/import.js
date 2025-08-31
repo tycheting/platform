@@ -20,6 +20,7 @@ async function importCourse(csvFilePath) {
             description: row.course_syllabus,
             category: row.course_category,
             tags: tags,
+            video_path: 'video/default_course.mp4',
             image_path: 'images/default_course.png',
             createdAt: new Date(),
             updatedAt: new Date()
