@@ -1,125 +1,96 @@
-/* 只作用在 MyCourses 頁面 */
-.mycourses-page .white-box {
-  padding: 18px 24px 24px 24px;
-}
+.mycourses-page .white-box { padding: 18px 24px 24px; }
 
-/* ───── 標題：中間圖片 + 左右線（限定 MyCourses） ───── */
-.mycourses-page .title-with-lines {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 12px 0 24px;
-  padding: 8px 0;
+/* 標題：中間圖片 + 左右線 */
+.mycourses-page .title-with-lines{
+  display:flex;align-items:center;justify-content:center;
+  margin:12px 0 24px;padding:8px 0;position:relative;
 }
-
 .mycourses-page .title-with-lines::before,
-.mycourses-page .title-with-lines::after {
-  content: "";
-  flex: 1 1 auto;
-  height: 1px;             /* 線條粗細 */
-  background: #000000;        /* 線條顏色 */
-  opacity: 0.5;
+.mycourses-page .title-with-lines::after{
+  content:"";flex:1;height:1px;background:#000;opacity:.5;
+}
+.mycourses-page .title-with-lines::before{margin-right:16px}
+.mycourses-page .title-with-lines::after{margin-left:16px}
+.mycourses-page .title-image{height:40px;width:auto;object-fit:contain}
+@media (max-width:576px){ .mycourses-page .title-image{height:32px} }
+
+/* 卡片網格 */
+.mycourses-page .course-card-grid{
+  display:grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap:20px;
+  align-items:stretch;
+}
+@media (min-width:1200px){ .mycourses-page .course-card{ grid-column: span 3; } }
+@media (min-width:768px) and (max-width:1199px){ .mycourses-page .course-card{ grid-column: span 6; } }
+@media (max-width:767px){ .mycourses-page .course-card{ grid-column: span 12; } }
+
+/* 卡片 */
+.mycourses-page .course-card{
+  display:flex;flex-direction:column;text-decoration:none;color:inherit;
+  border-radius:14px;overflow:hidden;background:#fff;
+  border:1.25px solid #000;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s;
+}
+.mycourses-page .course-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 24px rgba(0,0,0,.12);
+  border-color:#111;
 }
 
-.mycourses-page .title-with-lines::before { margin-right: 16px; }
-.mycourses-page .title-with-lines::after  { margin-left: 16px; }
-
-/* 標題圖片大小（可依需要調整高度） */
-.mycourses-page .title-image {
-  display: block;
-  height: 40px;
-  width: auto;
-  object-fit: contain;
-  image-rendering: -webkit-optimize-contrast;
+/* 封面 */
+.mycourses-page .course-card .cover{
+  position:relative;
+  aspect-ratio:16/10;
+  background:#eee;
+  flex-shrink:0;
+}
+.mycourses-page .course-card .cover img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.mycourses-page .course-card .ribbon{
+  position:absolute;top:10px;right:-8px;
+  font-size:12px;padding:6px 12px;border-radius:6px;transform:skewX(-10deg);
+  background:#00c2a8;color:#fff;
+}
+.mycourses-page .course-card .ribbon.done{
+  background:#28a745; /* 綠色「已完成」 */
 }
 
-/* 響應式：小螢幕讓圖片再小一點 */
-@media (max-width: 576px) {
-  .mycourses-page .title-image {
-    height: 32px;
-  }
+/* 內文 */
+.mycourses-page .course-card .meta{
+  padding:14px 14px 16px;
+  display:flex;flex-direction:column;gap:12px;flex:1;
+}
+.mycourses-page .course-card .title{
+  font-size:18px;line-height:1.35;font-weight:700;margin:0;color:#0b0b0b;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
 
-/* ───── 搜尋結果列表容器 ───── */
-.mycourses-page .search-result-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-top: 16px;
+/* 進度條 + 百分比 */
+.mycourses-page .progress-wrap{
+  display:flex;align-items:center;gap:8px;margin-top:auto;
+}
+.mycourses-page .progress-wrap .bar{
+  width: 350px;;height:15px;border-radius:999px;background:#e9ecef;overflow:hidden;
+  position:relative;
+}
+.mycourses-page .progress-wrap .fill{
+  height:100%;background:linear-gradient(90deg,#17a2b8,#24cca8);
+  width:0;transition:width .6s ease;
+}
+.mycourses-page .progress-wrap .percent-text{
+  font-size:13px;font-weight:700;color:#222;min-width:18px;text-align:right;
+}
+.mycourses-page .progress-wrap .percent-text.done{
+  color:#28a745; /* 綠色粗體「完成」 */
 }
 
-/* 每一筆課程卡片 */
-.mycourses-page .search-result-item {
-  display: flex;
-  gap: 24px;
-  text-decoration: none;
-  color: inherit;
-  border-radius: 12px;
-  padding: 12px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
-}
-
-.mycourses-page .search-result-item:hover {
-  background-color: #f7f7f7;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-}
-
-/* 圖片容器 */
-.mycourses-page .result-image-wrapper {
-  width: 350px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  overflow: hidden;
-  background-color: #ddd;
-  position: relative;
-}
-
-.mycourses-page .result-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.35s ease-in-out, box-shadow 0.35s ease-in-out;
-}
-
-.mycourses-page .search-result-item:hover .result-image {
-  transform: scale(1.03);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-/* 課程內容區塊 */
-.mycourses-page .result-content {
-  flex: 1;
-}
-
-/* 課程標題與描述 */
-.mycourses-page .result-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 8px;
-  margin-top: 4px;
-  color: #000;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  white-space: normal;
-}
-
-.mycourses-page .result-description {
-  color: #444;
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-/* 響應式：小螢幕卡片改為直向排列 */
-@media (max-width: 768px) {
-  .mycourses-page .search-result-item {
-    flex-direction: column;
-  }
-  .mycourses-page .result-image-wrapper {
-    width: 100%;
-    height: 200px;
-  }
+/* 深色模式 */
+@media (prefers-color-scheme: dark){
+  .mycourses-page .course-card{background:#161616;border:1.25px solid #2a2a2a}
+  .mycourses-page .title-with-lines::before,
+  .mycourses-page .title-with-lines::after{background:#fff;opacity:.2}
+  .mycourses-page .course-card .title{color:#f2f2f2}
 }

@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
-const { sequelize, courses } = require('./models'); // 調整為你的 models 匯出方式
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+const { sequelize, courses } = require('../models'); // 調整為你的 models 匯出方式
 
 async function importCourse(csvFilePath) {
   const Course = [];
@@ -19,7 +20,6 @@ async function importCourse(csvFilePath) {
             description: row.course_syllabus,
             category: row.course_category,
             tags: tags,
-            video_path: '', // 你可以視情況補上預設值
             image_path: 'images/default_course.png',
             createdAt: new Date(),
             updatedAt: new Date()
@@ -46,12 +46,12 @@ async function importCourse(csvFilePath) {
 (async () => {
   try {
     await sequelize.authenticate();
-    console.log('✅ 資料庫連線成功');
+    console.log('資料庫連線成功');
 
-    await importCourse(path.join(__dirname, 'course_info_with_embeddings.csv'));
+    await importCourse(path.join(__dirname, 'courses_info.csv'));
 
     await sequelize.close();
   } catch (error) {
-    console.error('❌ 發生錯誤：', error);
+    console.error('錯誤', error);
   }
 })();

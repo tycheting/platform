@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require("path");
 const { Parser } = require('json2csv');
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
-const { sequelize, user_course_actions, users, courses } = require('../models');s
+const { sequelize, user_course_actions, users, courses } = require('../models');
 
 const ACTION_LIST = [
   'action_click_about',
@@ -60,7 +60,7 @@ const ACTION_LIST = [
     const parser = new Parser({ fields });
     const csv = parser.parse(data);
 
-    fs.writeFileSync('./user_action.csv', csv, 'utf-8');
+    fs.writeFileSync('./export_user_action.csv', csv, 'utf-8');
     console.log('匯出成功');
   } catch (err) {
     console.error('匯出失敗', err);

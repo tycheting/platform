@@ -67,7 +67,7 @@ def main():
 
         # 5) 提交
         conn.commit()
-        print("✅ 已提交（COMMIT）")
+        print("已提交（COMMIT）")
 
         # 6) 驗證剩餘 default 筆數
         cur.execute(

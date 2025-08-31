@@ -28,8 +28,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     video_path: {
-      type: DataTypes.STRING(255),
-      allowNull: true
+      type: DataTypes.STRING(255), 
+      allowNull: true 
     },
     image_path: {
       type: DataTypes.STRING,

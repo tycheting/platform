@@ -28,6 +28,8 @@ app.use((req, res, next) => {
   next();
 });
 
+const orm = require("./models"); 
+
 // 路由掛載
 app.use("/auth", require("./routes/auth"));
 app.use("/courses", require("./routes/courses"));
@@ -35,6 +37,7 @@ app.use("/enroll", require("./routes/enrollments"));
 app.use("/recommend", require("./routes/recommend"));
 app.use("/user", require("./routes/user"));
 app.use("/track", require("./routes/track"));
+app.use("/video", require("./routes/video")(orm));
 
 // 測試首頁
 app.get("/", (req, res) => res.send("Hello from Express!"));

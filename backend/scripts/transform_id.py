@@ -1,8 +1,10 @@
+#action裡   userid -> username  coursename->courseid
+
 import pandas as pd
 
-ACTION_CSV = "user_action.csv"   # user_id
-USERS_CSV  = "users.csv"    # id, username
-COURSES_CSV = "courses.csv"
+ACTION_CSV = "export_user_action.csv"   # user_id
+USERS_CSV  = "export_users.csv"    # id, username
+COURSES_CSV = "export_courses.csv"
 OUT_CSV    = "action_transfromed.csv"
 
 # 讀檔

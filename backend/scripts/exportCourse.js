@@ -17,7 +17,7 @@ const db = require("../models");
 
     const csvContent = ["courseid,coursename", ...users.map(u => `${u.id},${u.course_id}`)].join("\n");
 
-    const outputPath = path.join(__dirname, "courses.csv");
+    const outputPath = path.join(__dirname, "export_courses.csv");
     fs.writeFileSync(outputPath, csvContent, "utf8");
 
     console.log("成功匯出");
