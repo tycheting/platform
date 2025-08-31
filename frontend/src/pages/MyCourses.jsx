@@ -50,7 +50,7 @@ function MyCourses() {
   const fetchOneProgress = async (courseId) => {
     try {
       const pr = await axios.get(
-        `http://localhost:5000/video/courses/${courseId}/progress`,
+        `http://localhost:5000/course/video/courses/${courseId}/progress`,
         { headers: authHeaders() }
       );
       const raw =

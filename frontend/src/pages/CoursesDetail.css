@@ -63,11 +63,27 @@
 .chapter-item:hover{background:#ece6fb;}
 .chapter-item.active{background:#d9c6f8;color:#4a0080;}
 .chapter-extra{margin:6px 0 10px;padding:10px 12px;background:#faf7ff;border-radius:8px;font-size:14px;color:#555;line-height:1.6;}
+.chapter-item.done {
+  position: relative;
+  background: #f4fff6;
+  border-color: #b7e6c2;
+}
+.chapter-item .ch-badge {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid #7acb86;
+  color: #2e7d32;
+  background: #e8f5e9;
+}
+
 
 /* 下方 WhiteBox + 分類列（限定 CourseDetail 頁面） */
 .white-box{padding:18px 24px 24px;margin-top:16px;border-radius:12px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,0.06);}
 
-/* 🔒 限定在 course-detail-container 下的分類列 */
+/* 限定在 course-detail-container 下的分類列 */
 .course-detail-container .category-bar{
   display:flex;justify-content:flex-start;flex-wrap:wrap;
   padding:12px 0 16px;border-bottom:1px solid #e0e0e0;margin-bottom:16px;
