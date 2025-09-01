@@ -11,6 +11,28 @@ function toAbsoluteUrl(p) {
   return `${BASE_URL}/${clean}`;
 }
 
+/** 以「任何型別的ID」取課程：數字 id 或 外部 key（course_id / course_key） */
+async function findCourseByAnyId(db, raw) {
+  // 1) 純數字 → 內部 id
+  if (/^\d+$/.test(raw)) {
+    const [rows] = await db.promise().query("SELECT * FROM courses WHERE id = ?", [Number(raw)]);
+    if (rows[0]) return rows[0];
+  }
+
+  // 2) 外部 key（優先用 course_id；若沒有此欄位或查不到，再試 course_key）
+  //    你的資料表若只有其中一個欄位也沒關係，另一個查詢會被 try-catch 吃掉。
+  try {
+    const [r1] = await db.promise().query("SELECT * FROM courses WHERE course_id = ? LIMIT 1", [raw]);
+    if (r1[0]) return r1[0];
+  } catch (_) {}
+  try {
+    const [r2] = await db.promise().query("SELECT * FROM courses WHERE course_key = ? LIMIT 1", [raw]);
+    if (r2[0]) return r2[0];
+  } catch (_) {}
+
+  return null;
+}
+
 /** ------------------ 搜尋 ------------------ */
 router.get("/search", (req, res) => {
   const query = req.query.query;
@@ -71,34 +93,26 @@ router.get("/category", (req, res) => {
   });
 });
 
-/** ------------------ 單一課程（含章節） ------------------ */
-router.get("/:id", async (req, res) => {
-  const courseId = Number(req.params.id);
-  if (!Number.isInteger(courseId)) {
-    return res.status(400).send("課程 ID 無效");
-  }
-
+/** ------------------ 以外部 key 查課程（推薦/前端 lookup 用） ------------------ */
+/** GET /courses/lookup?key=<course-v1:...> 或 ?key=<TsinghuaX+...> */
+router.get("/lookup", async (req, res) => {
+  const { key } = req.query;
+  if (!key) return res.status(400).json({ error: "key required" });
   try {
-    // 1) 查課程
-    const [courseRows] = await req.db.promise().query(
-      "SELECT * FROM courses WHERE id = ?",
-      [courseId]
-    );
-    if (!courseRows[0]) return res.status(404).send("課程不存在");
-
-    const course = courseRows[0];
+    const course = await findCourseByAnyId(req.db, key);
+    if (!course) return res.status(404).json({ error: "not found" });
 
     // 補絕對路徑
     if (course.image_path) course.image_path = toAbsoluteUrl(course.image_path);
     if (course.video_path) course.video_path = toAbsoluteUrl(course.video_path);
 
-    // 2) 查章節
+    // 章節仍用內部 id 綁
     const [chapterRows] = await req.db.promise().query(
       `SELECT id, title, description, position, video_url, duration_sec
        FROM course_chapters
        WHERE course_id = ?
        ORDER BY position ASC, id ASC`,
-      [courseId]
+      [course.id]
     );
 
     const chapters = chapterRows.map(ch => ({
@@ -110,10 +124,43 @@ router.get("/:id", async (req, res) => {
       duration_sec: ch.duration_sec
     }));
 
-    return res.json({
-      ...course,
-      chapters
-    });
+    return res.json({ ...course, chapters });
+  } catch (e) {
+    console.error("lookup error:", e);
+    return res.status(500).json({ error: "server error" });
+  }
+});
+
+/** ------------------ 單一課程（數字 id 或 外部 key 都可） ------------------ */
+router.get("/:id", async (req, res) => {
+  try {
+    const raw = req.params.id; // 可能是 "123" 或 "course-v1:TsinghuaX+..."
+    const course = await findCourseByAnyId(req.db, raw);
+    if (!course) return res.status(404).send("課程不存在");
+
+    // 補絕對路徑
+    if (course.image_path) course.image_path = toAbsoluteUrl(course.image_path);
+    if (course.video_path) course.video_path = toAbsoluteUrl(course.video_path);
+
+    // 章節（用內部 id）
+    const [chapterRows] = await req.db.promise().query(
+      `SELECT id, title, description, position, video_url, duration_sec
+       FROM course_chapters
+       WHERE course_id = ?
+       ORDER BY position ASC, id ASC`,
+      [course.id]
+    );
+
+    const chapters = chapterRows.map(ch => ({
+      id: ch.id,
+      title: ch.title,
+      description: ch.description,
+      position: ch.position,
+      video_url: ch.video_url ? toAbsoluteUrl(ch.video_url) : null,
+      duration_sec: ch.duration_sec
+    }));
+
+    return res.json({ ...course, chapters });
   } catch (e) {
     console.error(e);
     return res.status(500).send("伺服器錯誤");

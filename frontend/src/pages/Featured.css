@@ -1,0 +1,258 @@
+/* ===== Featured page base ===== */
+.featured-page {
+  max-width: 1280px;
+  margin: 32px auto;
+  padding: 0 16px 24px;
+}
+
+/* WhiteBox base */
+.featured-page .ftr-whitebox {
+  padding: 18px 24px 24px;
+}
+
+/* messages */
+.featured-page .ftr-alert,
+.featured-page .ftr-empty,
+.featured-page .ftr-error,
+.featured-page .ftr-loading {
+  margin: 12px 0 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.featured-page .ftr-alert { background: #fff7e6; border: 1px solid #ffe2b3; color: #8a5a00; }
+.featured-page .ftr-empty { background: #f6f7fb; border: 1px solid #e5e7f1; color: #384253; }
+.featured-page .ftr-error { background: #fff0f0; border: 1px solid #ffd6d6; color: #a60000; }
+.featured-page .ftr-loading { background: #f7f7f7; border: 1px solid #ececec; color: #4a4a4a; }
+
+/* ================================ */
+/* ===== TOP 3：直式卡片（圖上文下） */
+/* ================================ */
+.featured-page .ftr-top3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.featured-page .ftr-topcard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgb(0, 0, 0);
+  box-shadow: -1.5px 1.5px 1.5px rgba(0, 0, 0, 0.443);
+  padding: 12px;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.featured-page .ftr-topcard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(0,0,0,.10);
+  border-color: rgb(0, 0, 0);
+}
+
+.featured-page .ftr-topcard__thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #f1f3f5;
+  border-radius: 12px;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+.featured-page .ftr-topcard__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.featured-page .ftr-topcard__body { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+.featured-page .ftr-topcard__title { font-size: 18px; font-weight: 800; line-height: 1.35; margin: 0; color: #0c0c0c; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.featured-page .ftr-topcard__desc  { margin: 0; font-size: 14px; line-height: 1.6; color: #444; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.featured-page .ftr-topcard__desc--muted { color: #8a8a8a; font-style: italic; }
+
+/* =============================== */
+/* ===== 徽章：分開控制 1–3 名 & 4–11 名 */
+/* =============================== */
+
+/* 通用徽章容器（背景圖 + contain 等比縮放） */
+.featured-page .ftr-rank-badge{
+  position:absolute;
+  background-repeat:no-repeat;
+  background-size:contain;
+  background-position:center;
+  z-index:5;
+  pointer-events:none;
+  opacity:.95;
+}
+
+/* 1–3 名（topcard）— 大、稍微往上貼 */
+.featured-page .ftr-topcard .ftr-rank-badge{
+  top:-8px;           /* 高低在這裡調 */
+  left:6px;           /* 左右在這裡調 */
+  width:80px;
+  height:80px;
+}
+
+/* 4–11 名（midcard）— 小一點、靠近角落 */
+.featured-page .ftr-midcard .ftr-rank-badge{
+  top:6px;
+  left:-1px;
+  width:44px;
+  height:44px;
+}
+
+/* =============================== */
+/* ===== MID：第 4–11 名（四欄） */
+/* =============================== */
+.featured-page .ftr-midgrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  margin: 8px 0 18px;
+}
+.featured-page .ftr-midcard { grid-column: span 3; } /* 4 欄 */
+
+.featured-page .ftr-midcard {
+  display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+  border-radius: 12px; overflow: hidden;
+  background: #fff; border: 1px solid rgba(0,0,0,.08);
+  box-shadow: -1.5px 1.5px 1.5px rgba(0, 0, 0, 0.443);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.featured-page .ftr-midcard:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,.10); border-color: rgba(0,0,0,.2); }
+
+.featured-page .ftr-midcard__thumb { position: relative; aspect-ratio: 16 / 10; background: #f1f3f5; }
+.featured-page .ftr-midcard__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.featured-page .ftr-midcard__body { padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+.featured-page .ftr-midcard__title { font-size: 16px; font-weight: 800; line-height: 1.4; margin: 0; color: #0c0c0c; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.featured-page .ftr-midcard__desc { margin: 0; font-size: 13px; line-height: 1.55; color: #4a4a4a; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.featured-page .ftr-midcard__desc--muted { color: #8a8a8a; font-style: italic; }
+
+/* ============================================= */
+/* ===== TAIL：第 12–20 名（橫向小卡，一排一個） */
+/* ============================================= */
+.featured-page .ftr-tail {
+  display: grid;
+  grid-template-columns: 1fr;  /* 一排一個 */
+  gap: 10px;
+}
+
+.featured-page .ftr-tailrow {
+  display: grid;
+  grid-template-columns: 160px 1fr;  /* 小縮圖 + 右側文字 */
+  gap: 12px;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: -1.5px 1.5px 1.5px rgba(0, 0, 0, 0.443);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  min-height: 86px;             /* 壓低高度 */
+}
+.featured-page .ftr-tailrow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+  border-color: rgba(0,0,0,.18);
+}
+
+.featured-page .ftr-tailrow__thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #f1f3f5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.featured-page .ftr-tailrow__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.featured-page .ftr-tailrow__body {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.featured-page .ftr-tailrow__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #0c0c0c;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;      /* 一行標題 */
+}
+
+.featured-page .ftr-tailrow__rank {
+  font-weight: 900;
+  opacity: .7;
+  margin-right: 6px;
+}
+
+.featured-page .ftr-tailrow__desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4a4a4a;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;        /* 兩行簡介 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.featured-page .ftr-tailrow__desc--muted { color: #8a8a8a; font-style: italic; }
+
+/* 共用：無封面備援 */
+.featured-page .ftr-thumb-fallback {
+  display: none; place-items: center; width: 100%; height: 100%;
+  color: #7a7a7a; font-weight: 700; letter-spacing: .04em;
+  background: linear-gradient(135deg, #f3f4f7 0%, #eef1f5 100%);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1199px) {
+  .featured-page .ftr-top3 { grid-template-columns: 1fr; }
+}
+@media (max-width: 991px) {
+  .featured-page .ftr-midgrid .ftr-midcard { grid-column: span 6; } /* 2 欄 */
+}
+@media (max-width: 767px) {
+  .featured-page .ftr-midgrid .ftr-midcard { grid-column: span 12; } /* 1 欄 */
+  .featured-page .ftr-tailrow {
+    grid-template-columns: 130px 1fr;  /* 手機再縮一點縮圖 */
+    min-height: 78px;
+  }
+
+  /* 手機時徽章也分開縮小 */
+  .featured-page .ftr-topcard .ftr-rank-badge{ top:-6px; left:6px; width:60px; height:60px; }
+  .featured-page .ftr-midcard .ftr-rank-badge{ top:6px;  left:6px; width:36px; height:36px; }
+}
+
+/* ===== Dark mode ===== */
+@media (prefers-color-scheme: dark) {
+  .featured-page .ftr-alert { background: #3a2c10; border-color: #6d531c; color: #ffd590; }
+  .featured-page .ftr-empty { background: #1f2330; border-color: #2a3042; color: #c4cce0; }
+  .featured-page .ftr-error { background: #351717; border-color: #6a2b2b; color: #ffb5b5; }
+  .featured-page .ftr-loading { background: #242424; border-color: #333; color: #ddd; }
+
+  .featured-page .ftr-topcard,
+  .featured-page .ftr-midcard,
+  .featured-page .ftr-tailrow {
+    background: #181818; border-color: rgba(255,255,255,.08);
+    box-shadow: 0 10px 26px rgba(0,0,0,.4);
+  }
+
+  .featured-page .ftr-topcard__title,
+  .featured-page .ftr-midcard__title,
+  .featured-page .ftr-tailrow__title { color: #f3f3f3; }
+
+  .featured-page .ftr-topcard__desc,
+  .featured-page .ftr-midcard__desc,
+  .featured-page .ftr-tailrow__desc { color: #cfcfcf; }
+
+  .featured-page .ftr-topcard__desc--muted,
+  .featured-page .ftr-midcard__desc--muted,
+  .featured-page .ftr-tailrow__desc--muted { color: #a4a4a4; }
+}
