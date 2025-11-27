@@ -37,6 +37,38 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+// ────────────────────────────────────────────────────────────────
+// ★★★ 3. 手動補強關聯 (Manual Associations) ★★★
+// 這是為了讓推薦系統能透過 user_course_actions 抓到 course 的標題
+// ────────────────────────────────────────────────────────────────
+
+// 確保 Model 都有載入成功才執行
+const UserCourseAction = db.user_course_actions; // 對應 user_course_action.js 定義的 model name
+const Course = db.courses; // 假設你的課程 model name 叫 'courses' 或 'Course'
+const User = db.users;     // 假設你的使用者 model name 叫 'users' 或 'User'
+
+if (UserCourseAction && Course) {
+  // 建立 "UserCourseAction 屬於 Course" 的關係
+  // 這樣查詢時就可以用 include: [{ model: Course, as: 'course' }]
+  UserCourseAction.belongsTo(Course, { 
+    foreignKey: 'course_id', 
+    as: 'course' 
+  });
+}
+
+if (UserCourseAction && User) {
+  // 建立 "UserCourseAction 屬於 User" 的關係
+  UserCourseAction.belongsTo(User, { 
+    foreignKey: 'user_id', 
+    as: 'user' 
+  });
+}
+
+// (Debug 用) 印出目前載入的 Model 名稱，確保名稱沒打錯
+console.log("Loaded Models:", Object.keys(db));
+
+// ────────────────────────────────────────────────────────────────
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

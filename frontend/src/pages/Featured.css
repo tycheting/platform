@@ -149,7 +149,7 @@
   border: 1px solid rgba(0,0,0,.08);
   border-radius: 12px;
   padding: 10px;
-  box-shadow: -1.5px 1.5px 1.5px rgba(0, 0, 0, 0.443);
+  box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.443);
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   min-height: 86px;             /* 壓低高度 */
 }
