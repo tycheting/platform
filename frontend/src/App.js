@@ -1,5 +1,4 @@
-// src/App.js（只展示有改的 useEffect）
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react"; // 1. 引入 useRef
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -20,32 +19,32 @@ import SearchResults from './pages/SearchResults';
 
 function AppContent() {
   const location = useLocation();
+  // 使用 useRef 來確保我們只在該 div 存在時初始化
+  const bgInitialized = useRef(false);
+
   const hideSearchBar =
     location.pathname.startsWith("/courses/") ||
     ["/login", "/register"].includes(location.pathname);
 
+  // --- 原有的驗證邏輯 (保持不變) ---
   useEffect(() => {
     const pathname = location.pathname;
-
-    // 定義公開路由（不強制踢出）
     const isPublicPath =
       pathname === "/" ||
       pathname === "/featured" ||
       pathname === "/courses" ||
-      pathname.startsWith("/courses/") || // 詳情頁仍視為公開，如果你要鎖再移到受保護清單
+      pathname.startsWith("/courses/") ||
       pathname === "/login" ||
       pathname === "/register" ||
       pathname === "/search";
 
     if (isPublicPath) {
-      // 在公開頁面：如果已登入，就排一次自動登出；未登入就什麼都不做
       if (!isTokenExpired()) {
         scheduleAutoLogout();
       }
       return;
     }
 
-    // 受保護頁面（例如 /my-courses）
     if (isTokenExpired()) {
       logout();
     } else {
@@ -53,22 +52,64 @@ function AppContent() {
     }
   }, [location.pathname]);
 
+
+  // --- 新增：動態背景初始化邏輯 ---
+  useEffect(() => {
+    // 防止重複初始化
+    if (bgInitialized.current) return;
+
+    // 1. 建立 script 標籤
+    const script = document.createElement("script");
+    script.src = "/ChaosWavesBg.min.js"; // 指向 public 資料夾
+    script.async = true;
+
+    // 2. 當 script 載入完成後執行初始化
+    script.onload = () => {
+      // 確保 window.Color4Bg 存在且容器 div 存在
+      if (window.Color4Bg && document.getElementById("chaos-waves-canvas")) {
+        try {
+          // 初始化特效
+          new window.Color4Bg.ChaosWavesBg({
+            dom: "chaos-waves-canvas", // 對應下方 div 的 id
+            colors: ["#000000", "#ffffff", "#4f4f4f", "#a8a8a8", "#e8e8e8", "#000000"],
+            loop: true
+          });
+          bgInitialized.current = true;
+          console.log("Background initialized");
+        } catch (e) {
+          console.error("背景初始化失敗:", e);
+        }
+      }
+    };
+
+    document.body.appendChild(script);
+
+    // Cleanup: 組件卸載時移除 script (視情況也可不移除，避免換頁閃爍)
+    return () => {
+      document.body.removeChild(script);
+      bgInitialized.current = false;
+    };
+  }, []); // 空陣列表示只在掛載時執行一次
+
   return (
     <>
-      {/* 背景圖層 */}
-      <div className="page-background" style={{
-        position: 'fixed',
-        top: 0, left: 0,
-        width: '100vw', height: '100vh',
-        backgroundImage: "url('/background.png')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
-        zIndex: -1,
-      }}></div>
+      {/* 背景圖層 
+        這裡改為一個空的 div，並給予 ID 讓 JS 抓取
+        樣式保持 fixed 和 zIndex: -1 以確保在最底層
+      */}
+      <div 
+        id="chaos-waves-canvas" 
+        style={{
+          position: 'fixed',
+          top: 0, left: 0,
+          width: '100vw', height: '100vh',
+          zIndex: -1,
+          overflow: 'hidden', // 防止背景溢出捲軸
+          backgroundColor: '#000000' // 設定一個預設底色防止載入前白屏
+        }}
+      ></div>
 
-      {/* 主體內容 */}
+      {/* 主體內容 (保持不變) */}
       <div className="d-flex flex-column min-vh-100 position-relative" style={{ zIndex: 0 }}>
         <AppNavbar />
 

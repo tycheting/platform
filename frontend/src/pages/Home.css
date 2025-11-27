@@ -1,30 +1,68 @@
-.course-link {
+/* --- Banner 設定 (保持不變) --- */
+.banner-wrapper {
+  width: 100%;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  background-color: transparent;
+  margin-bottom: 40px !important;
+  text-align: center;
+}
+
+.main-banner {
+  width: 100%;
+  max-width: 500px; 
+  height: auto;
+  display: block;
+  margin: 0 auto; 
+}
+
+/* --- 滑動容器 --- */
+.slider-container {
+  position: relative; /* 讓按鈕可以根據這個框框定位 */
+  width: 100%;
+  padding: 0 20px; /* 左右留一點縫隙 */
+}
+
+/* --- 滑動軌道 --- */
+.slider-track {
+  display: flex;
+  gap: 24px; /* 卡片間距 */
+  overflow-x: auto; /* 允許水平捲動 */
+  scroll-behavior: smooth; /* 平滑滾動效果 */
+  padding: 10px 5px; /* 上下留白給陰影顯示 */
+  
+  /* 隱藏預設的醜醜捲軸 */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Chrome, Safari 隱藏捲軸 */
+.slider-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- 卡片樣式 (保持您喜歡的正方形風格) --- */
+.course-card-scroll {
+  display: block;
   text-decoration: none;
   color: inherit;
+  width: 220px; /* 固定寬度 */
+  flex-shrink: 0; /* 防止被擠壓 */
+  transition: transform 0.2s ease;
 }
 
-.course-link:hover .course-image {
-  transform: scale(1.03);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.course-title {
-  margin-top: 12px;
-  font-size: 19px !important;
-  font-weight: bold;
-  color: #000;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  white-space: normal;
+.course-card-scroll:hover {
+  transform: translateY(-5px); /* 浮起效果 */
 }
 
 .course-image-container {
   width: 100%;
   position: relative;
-  padding-top: 56.25%;
+  padding-top: 100%; /* 正方形 */
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 24px;
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .course-image {
@@ -36,38 +74,57 @@
   object-fit: cover;
 }
 
-.course-section {
-  background-color: white !important;
-  border-radius: 24px !important;
-  padding: 12px 24px !important;
-  margin-bottom: 48px !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+.course-title {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.featured-title-image {
-  max-height: 64px;
-  max-width: 220px;
-  display: block;
-  margin: 0 auto;
-  object-fit: contain;
-}
-
-.title-image-wrapper {
-  margin-bottom: 16px;
-}
-
-.title-with-lines {
+/* --- 左右導航按鈕樣式 --- */
+.nav-btn {
+  position: absolute;
+  top: 40%; /* 垂直大概置中 */
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%; /* 圓形 */
+  border: 1px solid #eee;
+  background-color: rgba(255, 255, 255, 0.9); /* 半透明白底 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* 陰影讓它浮起來 */
+  font-size: 18px;
+  color: #555;
+  cursor: pointer;
+  z-index: 10; /* 確保按鈕浮在圖片上面 */
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin: 6px 0;
+  transition: all 0.2s ease;
 }
 
-.title-with-lines::before,
-.title-with-lines::after {
-  content: "";
-  flex: 1;
-  height: 1.25px;
-  background-color: #333;
+.nav-btn:hover {
+  background-color: #fff;
+  transform: translateY(-50%) scale(1.1); /* 滑鼠移上去稍微變大 */
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  color: #000;
+}
+
+/* 按鈕位置 */
+.left-btn {
+  left: 10px; /* 靠左固定 */
+}
+
+.right-btn {
+  right: 10px; /* 靠右固定 */
+}
+
+/* 手機版隱藏按鈕 (手機直接用手滑比較直覺) */
+@media (max-width: 768px) {
+  .nav-btn {
+    display: none;
+  }
 }
