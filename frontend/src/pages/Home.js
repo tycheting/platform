@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
+import React, { useEffect, useState, useRef } from 'react';
+import { Container } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import './Home.css';
 
 function Courses() {
   const [courses, setCourses] = useState([]);
+  
+  // 1. 建立 Ref 來控制上下兩排不同的捲動區塊
+  const row1Ref = useRef(null);
+  const row2Ref = useRef(null);
 
   useEffect(() => {
     fetchCourses();
@@ -20,53 +24,59 @@ function Courses() {
     }
   };
 
-  // 定義區塊順序與每個要顯示幾個課程
-  const sections = [
-    { title: '你會喜歡', key: 'recommend', count: 8 },
-    { title: '現在熱門', key: 'hot', count: 8 },
-    { title: '新興趨勢', key: 'trend', count: 8 },
-  ];
+  // 分割課程資料
+  const midIndex = Math.ceil(courses.length / 2);
+  const row1Courses = courses.slice(0, midIndex);
+  const row2Courses = courses.slice(midIndex);
 
-  // 計算每區塊對應的起始 index
-  const getCoursesSlice = (startIdx, count) => courses.slice(startIdx, startIdx + count);
+  // 2. 左右滑動功能的函式
+  const scroll = (ref, scrollOffset) => {
+    if (ref.current) {
+      // smooth 代表平滑捲動
+      ref.current.scrollBy({ left: scrollOffset, behavior: 'smooth' });
+    }
+  };
+
+  // 3. 定義一個渲染「滑動區塊」的元件
+  const renderSliderRow = (items, ref) => (
+    <div className="slider-container mb-5">
+      
+      {/* 左按鈕 */}
+      <button className="nav-btn left-btn" onClick={() => scroll(ref, -600)}>
+        {/* 這是一個向左的箭頭符號，您也可以換成圖片 */}
+        ◀ 
+      </button>
+
+      {/* 捲動軌道 (綁定 ref) */}
+      <div className="slider-track" ref={ref}>
+        {items.map(course => (
+          <Link to={`/courses/${course.id}`} className="course-card-scroll" key={course.id}>
+            <div className="course-image-container">
+              <img src={course.image_path} alt={course.title} className="course-image" />
+            </div>
+            <h5 className="course-title">{course.title}</h5>
+          </Link>
+        ))}
+      </div>
+
+      {/* 右按鈕 */}
+      <button className="nav-btn right-btn" onClick={() => scroll(ref, 600)}>
+        ▶
+      </button>
+
+    </div>
+  );
 
   return (
-    <Container className="mt-4">
-      {sections.map((section, idx) => {
-        // 每區塊切取課程（可依後端分類後調整為 filter）
-        const startIndex = idx === 0 ? 0 : sections.slice(0, idx).reduce((sum, s) => sum + s.count, 0);
-        const courseList = getCoursesSlice(startIndex, section.count);
+    <Container fluid className="mt-4 p-0">
+      <div className="banner-wrapper mb-5">
+        <img src="/banner.png" alt="Welcome Banner" className="main-banner" />
+      </div>
 
-        return (
-          <div key={section.key} className="course-section mb-5">
-            <div className="title-with-lines mb-3">
-              <div className="title-image-wrapper">
-                <img
-                  src={`/${section.key}.png`}
-                  alt={section.title}
-                  className="featured-title-image"
-                />
-              </div>
-            </div>
-            <Row>
-              {courseList.map(course => (
-                <Col key={course.id} xs={12} sm={6} md={3} className="mb-3">
-                  <Link to={`/courses/${course.id}`} className="course-link">
-                    <div className="course-image-container">
-                      <img
-                        src={course.image_path}
-                        alt={course.title}
-                        className="course-image"
-                      />
-                    </div>
-                    <h5 className="course-title">{course.title}</h5>
-                  </Link>
-                </Col>
-              ))}
-            </Row>
-          </div>
-        );
-      })}
+      {/* 渲染兩排手動滑動列表 */}
+      {row1Courses.length > 0 && renderSliderRow(row1Courses, row1Ref)}
+      {row2Courses.length > 0 && renderSliderRow(row2Courses, row2Ref)}
+
     </Container>
   );
 }
